@@ -1,0 +1,77 @@
+# ---- Python Bytecode ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ---- C Extensions ----
+*.so
+
+# ---- Virtual Environments ----
+venv/
+.venv/
+as_venv/
+env/
+
+# ---- Build & Distribution ----
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+egss/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ---- PyInstaller ----
+*.manifest
+*.spec
+
+# ---- Packaging Logs ----
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ---- Unit Test / Coverage ----
+htmlcov/
+.tox/
+.nox/
+.coverage*
+.coverage
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ---- Jupyter Notebook ----
+.ipynb_checkpoints/
+
+# ---- Environment Variables ----
+.env
+.env.*
+
+# ---- Data & Outputs ----
+outputs/
+**/outputs/
+text_chunks_and_embeddings_df.csv
+
+# ---- Logs ----
+*.log
+
+# ---- Databases ----
+*.sqlite
+*.db
+
+# ---- Local RAG directories ----
+local-rag/
+./local-rag/*
+
+# ---- OS Metadata ----
+.DS_Store
+Thumbs.db
