@@ -17,7 +17,7 @@ MODELS_DIR.mkdir(exist_ok=True)
 OUTPUTS_DIR.mkdir(exist_ok=True)
 
 # PDF settings
-PDF_URL = "/home/quangnh58/Askly"
+PDF_URL = "/home/quangnh58/Askly/data"
 PDF_FILENAME = "human-nutrition-text.pdf"
 PDF_PATH = BASE_DIR / PDF_FILENAME  # Use existing PDF in root directory
 
