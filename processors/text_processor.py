@@ -18,9 +18,29 @@ class TextProcessor:
     
     def _simple_sentence_split(self, text: str) -> List[str]:
         """Simple sentence splitting without spaCy"""
-        # Split on periods, exclamation marks, and question marks
-        sentences = re.split(r'[.!?]+', text)
-        # Clean up sentences
+        # Split on periods, exclamation marks, and question marks, but preserve delimiters
+        sentences = []
+        parts = re.split(r'([.!?]+(?:\s+|$))', text)
+        
+        # Combine parts to preserve delimiters
+        i = 0
+        while i < len(parts) - 1:
+            if parts[i].strip():  # If there's content
+                # Combine content with its delimiter
+                sentence = (parts[i] + parts[i+1]).strip()
+                # Handle special cases for lists and acronyms
+                if re.match(r'^[a-zA-Z]\.$', sentence) or re.match(r'^\d+\.$', sentence):
+                    if i + 2 < len(parts):
+                        parts[i+2] = sentence + ' ' + parts[i+2]
+                else:
+                    sentences.append(sentence)
+            i += 2
+        
+        # Add the last part if it exists and isn't empty
+        if i < len(parts) and parts[i].strip():
+            sentences.append(parts[i].strip())
+            
+        # Clean up and remove empty sentences
         sentences = [s.strip() for s in sentences if s.strip()]
         return sentences
     
@@ -35,15 +55,53 @@ class TextProcessor:
         return pages_and_texts
     
     def create_sentence_chunks(self, pages_and_texts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Create sentence chunks from pages"""
+        """Create sentence chunks from pages, maintaining context and avoiding splits in lists"""
         print(f"[INFO] Creating sentence chunks with size {self.chunk_size}...")
         
         for item in tqdm(pages_and_texts, desc="Creating chunks"):
-            item["sentence_chunks"] = split_list(
-                input_list=item["sentences"],
-                slice_size=self.chunk_size
-            )
-            item["num_chunks"] = len(item["sentence_chunks"])
+            sentences = item["sentences"]
+            chunks = []
+            current_chunk = []
+            current_size = 0
+            in_list = False
+            list_buffer = []
+            
+            for sentence in sentences:
+                # Check if sentence is part of a list
+                if re.match(r'^[-•*]\s|^\d+\.\s', sentence):
+                    if not in_list:
+                        # If we have a non-list chunk, save it
+                        if current_chunk:
+                            chunks.append(current_chunk)
+                            current_chunk = []
+                            current_size = 0
+                    in_list = True
+                    list_buffer.append(sentence)
+                else:
+                    if in_list:
+                        # End of list, add the complete list as one chunk
+                        if list_buffer:
+                            chunks.append(list_buffer)
+                            list_buffer = []
+                        in_list = False
+                    
+                    # Normal sentence processing
+                    if current_size + 1 > self.chunk_size:
+                        chunks.append(current_chunk)
+                        current_chunk = [sentence]
+                        current_size = 1
+                    else:
+                        current_chunk.append(sentence)
+                        current_size += 1
+            
+            # Add any remaining content
+            if list_buffer:
+                chunks.append(list_buffer)
+            elif current_chunk:
+                chunks.append(current_chunk)
+            
+            item["sentence_chunks"] = chunks
+            item["num_chunks"] = len(chunks)
         
         return pages_and_texts
     

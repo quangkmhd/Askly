@@ -18,8 +18,8 @@ from utils.utils import print_wrapped
 class RAGPipeline:
     """Main RAG pipeline that orchestrates all components"""
     
-    def __init__(self, pdf_url: Optional[str] = None, pdf_path: Optional[Path] = None):
-        self.pdf_processor = PDFProcessor(pdf_url, pdf_path)
+    def __init__(self, pdf_path: Optional[Path] = None):
+        self.pdf_processor = PDFProcessor(pdf_path)
         self.text_processor = TextProcessor()
         self.embedding_manager = EmbeddingManager()
         self.retrieval_system = None
@@ -54,8 +54,9 @@ class RAGPipeline:
                 self.embedding_manager.save_embeddings()
             
             # Initialize retrieval system
+            # Pass the EmbeddingManager instance (has .encode) rather than the raw TF-Hub module
             self.retrieval_system = RetrievalSystem(
-                embedding_model=self.embedding_manager.model,
+                embedding_model=self.embedding_manager,
                 embeddings=self.embeddings,
                 text_chunks=self.text_chunks
             )
@@ -156,7 +157,7 @@ class RAGPipeline:
             
             # Reinitialize retrieval system
             self.retrieval_system = RetrievalSystem(
-                embedding_model=self.embedding_manager.model,
+                embedding_model=self.embedding_manager,
                 embeddings=self.embeddings,
                 text_chunks=self.text_chunks
             )

@@ -8,37 +8,23 @@ from tqdm.auto import tqdm
 from typing import List, Dict, Any
 from pathlib import Path
 
-from config.config import PDF_URL, PDF_PATH
+from config.config import PDF_PATH
 from utils.utils import clean_text
 
 
 class PDFProcessor:
-    """Handles PDF downloading and text extraction"""
+    """Handles PDF text extraction"""
     
-    def __init__(self, pdf_url: str = PDF_URL, pdf_path: Path = PDF_PATH):
-        self.pdf_url = pdf_url
-        self.pdf_path = pdf_path or PDF_PATH
+    def __init__(self, pdf_path: Path = PDF_PATH):
+        self.pdf_path = pdf_path
     
-    def download_pdf(self) -> bool:
-        """Download PDF from URL if it doesn't exist locally"""
+    def check_pdf_exists(self) -> bool:
+        """Check if PDF exists locally"""
         if self.pdf_path.exists():
-            print(f"File {self.pdf_path} already exists.")
+            print(f"[INFO] Found PDF file at {self.pdf_path}")
             return True
-        
-        print("[INFO] File doesn't exist, downloading...")
-        
-        try:
-            response = requests.get(self.pdf_url)
-            if response.status_code == 200:
-                with open(self.pdf_path, "wb") as file:
-                    file.write(response.content)
-                print(f"[INFO] File downloaded and saved as {self.pdf_path}")
-                return True
-            else:
-                print(f"[ERROR] Failed to download file. Status code: {response.status_code}")
-                return False
-        except Exception as e:
-            print(f"[ERROR] Error downloading PDF: {e}")
+        else:
+            print(f"[ERROR] PDF file not found at {self.pdf_path}")
             return False
     
     def text_formatter(self, text: str) -> str:
@@ -72,9 +58,9 @@ class PDFProcessor:
     
     def process_pdf(self) -> List[Dict[str, Any]]:
         """Complete PDF processing pipeline"""
-        # Download PDF if needed
-        if not self.download_pdf():
-            raise RuntimeError("Failed to download PDF")
+        # Check if PDF exists
+        if not self.check_pdf_exists():
+            raise FileNotFoundError(f"PDF file not found: {self.pdf_path}")
         
         # Extract text from PDF
         pages_and_texts = self.open_and_read_pdf()

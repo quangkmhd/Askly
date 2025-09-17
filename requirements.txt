@@ -11,5 +11,6 @@ accelerate
 bitsandbytes
 jupyter
 wheel
-dotenv
+python-dotenv
+streamlit==1.31.1
 # flash-attn
