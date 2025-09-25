@@ -24,6 +24,7 @@ EMBEDDINGS_DIR.mkdir(exist_ok=True)
 EMBEDDINGS_INDEX_FILE = EMBEDDINGS_DIR / "embeddings_index.json"  # Store file paths and their embeddings mapping
 EMBEDDINGS_DATA_FILE = EMBEDDINGS_DIR / "embeddings_data.npz"     # Store the actual embeddings
 TEXT_CHUNKS_FILE = EMBEDDINGS_DIR / "text_chunks.json"            # Store text chunks
+CHAT_HISTORY_FILE = DATA_DIR / "chat_history.json"                # Store chat history
 
 # PDF settings
 PDF_FILENAME = "human-nutrition-text.pdf"
@@ -62,7 +63,7 @@ USE_FLASH_ATTENTION = True
 # Generation settings
 DEFAULT_TEMPERATURE = 0.7
 DEFAULT_MAX_NEW_TOKENS = 10000
-DEFAULT_N_RESOURCES_TO_RETURN = 10
+DEFAULT_N_RESOURCES_TO_RETURN = 15
 
 # File paths
 EMBEDDINGS_CSV_PATH = OUTPUTS_DIR / "text_chunks_and_embeddings_df.csv"

@@ -100,53 +100,22 @@ def process_pdf(uploaded_file):
             f.write(uploaded_file.getvalue())
         
         with st.spinner('Processing PDF...'):
-            if not st.session_state.rag_pipeline.is_initialized:
-                # First PDF - initialize the pipeline
-                st.session_state.rag_pipeline = RAGPipeline(pdf_path)
-                st.session_state.rag_pipeline.setup_pipeline(load_existing_embeddings=True)
-                
-                # Update index with new file
-                embeddings_index = {
-                    str(pdf_path): {
-                        'original_name': uploaded_file.name,
-                        'timestamp': timestamp
-                    }
-                }
-                
-            else:
-                # Additional PDF - update existing knowledge base
-                pdf_processor = PDFProcessor(pdf_path)
-                pages_and_texts = pdf_processor.process_pdf()
-                text_chunks = st.session_state.rag_pipeline.text_processor.process_text(pages_and_texts)
-                new_embeddings = st.session_state.rag_pipeline.embedding_manager.create_embeddings(text_chunks)
-                
-                # Load index or create new one
-                try:
-                    with open(EMBEDDINGS_INDEX_FILE, 'r', encoding='utf-8') as f:
-                        embeddings_index = json.load(f)
-                except (FileNotFoundError, json.JSONDecodeError):
-                    embeddings_index = {}
-                
-                # Combine with existing embeddings
-                if isinstance(st.session_state.rag_pipeline.embeddings, np.ndarray):
-                    combined_embeddings = np.vstack([st.session_state.rag_pipeline.embeddings, new_embeddings])
-                else:
-                    combined_embeddings = new_embeddings
-                    
-                st.session_state.rag_pipeline.embeddings = combined_embeddings
-                st.session_state.rag_pipeline.text_chunks.extend(text_chunks)
-                
-                # Update retrieval system
-                st.session_state.rag_pipeline.retrieval_system.update_embeddings(
-                    st.session_state.rag_pipeline.embeddings,
-                    st.session_state.rag_pipeline.text_chunks
-                )
-                
-                # Update index
-                embeddings_index[str(pdf_path)] = {
-                    'original_name': uploaded_file.name,
-                    'timestamp': timestamp
-                }
+            # Use the new incremental processing system
+            # Just trigger a re-setup of the pipeline, it will automatically detect and process new PDFs
+            st.session_state.rag_pipeline.setup_pipeline(load_existing_embeddings=True)
+            
+            # Update index for UI display
+            try:
+                with open(EMBEDDINGS_INDEX_FILE, 'r', encoding='utf-8') as f:
+                    embeddings_index = json.load(f)
+            except (FileNotFoundError, json.JSONDecodeError):
+                embeddings_index = {}
+            
+            # Add new file to index
+            embeddings_index[str(pdf_path)] = {
+                'original_name': uploaded_file.name,
+                'timestamp': timestamp
+            }
             
             # Save updated data
             save_data(
@@ -181,7 +150,15 @@ def get_answer(question):
             except Exception as e:
                 return f"Lỗi khi khởi tạo hệ thống: {str(e)}"
         
-        answer = st.session_state.rag_pipeline.ask(question)
+        # Convert Streamlit messages to chat history format
+        chat_history = []
+        for msg in st.session_state.messages:
+            chat_history.append({
+                'role': msg['role'],
+                'content': msg['content']
+            })
+        
+        answer = st.session_state.rag_pipeline.ask(question, chat_history=chat_history)
         return answer
     except Exception as e:
         if "Pipeline not initialized" in str(e):

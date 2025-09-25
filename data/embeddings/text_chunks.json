@@ -1,6 +1,13 @@
 [
   {
     "page_number": -41,
+    "sentence_chunk": "[Thông tin liên hệ] 1. Phòng Quan hệ Doanh nghiệp & Cựu sinh viên Email: job@fe.edu.vn Điện thoại: 02473005569 Website: https://ojt.fpt.edu.vn/ 2. Phòng khảo thí Email: khaothi@fpt.edu.vn Điện thoại: 0979030345 3. Phòng dịch vụ sinh viên Hotline: 024 7308 1313 Email: Dichvusinhvien@fe.edu.vn Website: http://fpt.edu.vn 4. Tham vấn cóc kể - FPTU Fanpage: https://www.facebook.com/thamvancocke Email: tuvansinhvien@fpt.edu.vn SĐT: 0837347620 (Thời gian hoạt động: 8h30 -12h00 & 13h30 -17h00 Thứ hai đến thứ sáu) Địa điểm: 310R tòa Alpha, ĐH FPT HN",
+    "chunk_char_count": 546,
+    "chunk_word_count": 79,
+    "chunk_token_count": 136.5
+  },
+  {
+    "page_number": -41,
     "sentence_chunk": "[Dữ liệu về học vụ và thủ tục] Tuyển sinh và nhập học: A. Các thủ tục đăng ký: - Nhập một số thông tin cơ bản như họ và tên, email, sdt, chuyên ngành đăng ký, đăng ký học tại cơ sở, đăng kí học bổng và điểm thành phần các môn học từ cấp 3. Sau khi nhập thông tin, thí sinh nộp hồ sơ trực tuyến/trực tiếp, đóng lệ phí xét tuyển. Trường sẽ xét tuyển, công bố kết quả, sau đó thí sinh xác nhận nhập học, hoàn thiện hồ sơ giấy tờ và nộp học phí kỳ đầu. B. Hồ sơ nhập học Đại học FPT Hà Nội - Phiếu/biên nhận nhập học (theo mẫu trường) - 02 bản gốc Biên nhận nhập học - 01 bản gốc Phiếu nhập học - Học bạ THPT - 01 bản sao công chứng đầy đủ 3 năm (có học lực, hạnh kiểm, kết quả rèn luyện) - Bằng tốt nghiệp THPT - Nếu đã có bằng: nộp bản sao công chứng - Nếu chưa: nộp giấy chứng nhận tốt nghiệp tạm thời, bổ sung bằng trong vòng 01 năm - Giấy chứng nhận kết quả thi tốt nghiệp THPT - Nếu xét tuyển bằng điểm thi THPT - Nếu theo phương thức khác: chuẩn bị hồ sơ tương ứng - Chứng chỉ tiếng Anh (nếu có) - Căn cước công dân/CMND (bản sao công chứng) - Giấy khai sinh (bản sao công chứng) - Ảnh 3×4 - 01 ảnh, để trong phong bì nhỏ - Ghi rõ họ tên + ngày tháng năm sinh phía sau ảnh và ngoài phong bì - Giấy chứng nhận xếp hạng School Rank (nếu áp dụng) - Giấy tờ ưu tiên/xét tuyển thẳng (nếu có) - Bản sao công chứng giấy tờ chứng minh điều kiện - Giấy tờ liên quan đến thân nhân, ưu đãi học phí (nếu đủ điều kiện) - Ví dụ: con cán bộ/nhân viên FPT, anh/chị/em đang học tại FPT… C.Đối tượng và Điều kiện xét tuyển: 1.Đối tượng - Thí sinh đã tốt nghiệp THPT hoặc tương đương (trong nước hoặc nước ngoài).",
     "chunk_char_count": 1597,
     "chunk_word_count": 358,
@@ -138,5 +145,12 @@
     "chunk_char_count": 263,
     "chunk_word_count": 56,
     "chunk_token_count": 65.75
+  },
+  {
+    "page_number": -41,
+    "sentence_chunk": "[Thông tin liên hệ] 1. Phòng Quan hệ Doanh nghiệp & Cựu sinh viên Email: job@fe.edu.vn Điện thoại: 02473005569 Website: https://ojt.fpt.edu.vn/ 2. Phòng khảo thí Email: khaothi@fpt.edu.vn Điện thoại: 0979030345 3. Phòng dịch vụ sinh viên Hotline: 024 7308 1313 Email: Dichvusinhvien@fe.edu.vn Website: http://fpt.edu.vn 4. Tham vấn cóc kể - FPTU Fanpage: https://www.facebook.com/thamvancocke Email: tuvansinhvien@fpt.edu.vn SĐT: 0837347620 (Thời gian hoạt động: 8h30 -12h00 & 13h30 -17h00 Thứ hai đến thứ sáu) Địa điểm: 310R tòa Alpha, ĐH FPT HN",
+    "chunk_char_count": 546,
+    "chunk_word_count": 79,
+    "chunk_token_count": 136.5
   }
 ]

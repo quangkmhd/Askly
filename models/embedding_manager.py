@@ -124,7 +124,11 @@ class EmbeddingManager:
             file_path = str(EMBEDDINGS_CSV_PATH)
 
         print(f"[INFO] Saving embeddings to {file_path}")
-        emb_np = self.embeddings.numpy()
+        # Handle both tf.Tensor and numpy array
+        if hasattr(self.embeddings, 'numpy'):
+            emb_np = self.embeddings.numpy()
+        else:
+            emb_np = self.embeddings
 
         rows = []
         for i, chunk in enumerate(self.text_chunks):

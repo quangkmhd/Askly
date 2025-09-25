@@ -43,6 +43,10 @@ class RetrievalSystem:
         Retrieve relevant resources for a query.
         Returns numpy arrays: (scores, indices)
         """
+        # Check if we have embeddings
+        if self.embeddings is None or len(self.text_chunks) == 0:
+            print("[WARNING] No embeddings available for search")
+            return np.array([]), np.array([])
         # Embed query
         with tf.device(self.device):
             # Get query embedding and ensure shape is [D]
@@ -61,7 +65,12 @@ class RetrievalSystem:
 
             start_time = timer()
             sims = self._cosine_similarity(query_embedding)  # tf.Tensor [N]
-            scores, indices = tf.math.top_k(sims, k=n_resources)
+            
+            # Ensure k doesn't exceed the number of available embeddings
+            available_embeddings = tf.shape(sims)[0]
+            k = tf.minimum(n_resources, available_embeddings)
+            
+            scores, indices = tf.math.top_k(sims, k=k)
             end_time = timer()
 
         if print_time:
@@ -85,14 +94,77 @@ class RetrievalSystem:
 
     def get_context_items(self, query: str,
                           n_resources: int = DEFAULT_N_RESOURCES_TO_RETURN) -> List[Dict[str, Any]]:
-        """Get context items for a query"""
+        """Get context items for a query with enhanced search"""
+        # First, try normal search
         scores, indices = self.retrieve_relevant_resources(query, n_resources, print_time=False)
+        
+        # Handle empty results
+        if len(scores) == 0:
+            print(f"[WARNING] No search results found for query: {query}")
+            return []
+        
+        # If scores are too low, try expanded search with related terms
+        if len(scores) > 0 and scores[0] < 0.25:  # Lower similarity threshold for more flexible search
+            expanded_query = self._expand_query(query)
+            if expanded_query != query:
+                exp_scores, exp_indices = self.retrieve_relevant_resources(expanded_query, n_resources, print_time=False)
+                # Only combine if we got results from expanded search
+                if len(exp_scores) > 0:
+                    # Combine results, prioritizing original query
+                    all_scores = np.concatenate([scores, exp_scores * 0.8])  # Slightly lower weight for expanded
+                    all_indices = np.concatenate([indices, exp_indices])
+                else:
+                    all_scores = scores
+                    all_indices = indices
+                # Remove duplicates and get top results
+                unique_items = {}
+                for score, idx in zip(all_scores, all_indices):
+                    if idx not in unique_items or score > unique_items[idx]:
+                        unique_items[idx] = score
+                # Sort by score and take top n_resources
+                sorted_items = sorted(unique_items.items(), key=lambda x: x[1], reverse=True)[:n_resources]
+                scores = np.array([item[1] for item in sorted_items])
+                indices = np.array([item[0] for item in sorted_items])
+        
         context_items = []
         for score, idx in zip(scores, indices):
             item = self.text_chunks[int(idx)].copy()
             item["score"] = float(score)
             context_items.append(item)
         return context_items
+    
+    def _expand_query(self, query: str) -> str:
+        """Expand query with related terms for better search"""
+        query_lower = query.lower()
+        
+        # Vietnamese expansion rules - comprehensive
+        expansions = {
+            "học phí": "học phí chi phí đào tạo tuition fee cost money tiền bạc",
+            "trường": "trường đại học university college school institution cơ sở giáo dục",
+            "ngành": "ngành học chuyên ngành program major field specialization",
+            "kỹ thuật phần mềm": "kỹ thuật phần mềm software engineering computer science IT công nghệ thông tin",
+            "điểm": "điểm số grade score point evaluation đánh giá",
+            "tuyển sinh": "tuyển sinh admission enrollment đăng ký nhập học",
+            "thời gian": "thời gian duration time period khoảng thời gian",
+            "chương trình": "chương trình program curriculum course khóa học môn học",
+            "giảng viên": "giảng viên teacher professor instructor thầy cô",
+            "sinh viên": "sinh viên student học sinh người học",
+            "thi": "thi exam test kiểm tra đánh giá",
+            "học": "học study learning education giáo dục",
+            "việc làm": "việc làm job career employment công việc nghề nghiệp",
+            "kỹ năng": "kỹ năng skill ability năng lực khả năng",
+            "công nghệ": "công nghệ technology tech kỹ thuật",
+            "kinh doanh": "kinh doanh business commerce thương mại",
+            "quản lý": "quản lý management administration điều hành",
+        }
+        
+        expanded = query
+        for key, expansion in expansions.items():
+            if key in query_lower:
+                expanded = f"{query} {expansion}"
+                break
+                
+        return expanded
 
     def search_by_similarity(self, query: str, threshold: float = 0.5,
                              n_resources: int = DEFAULT_N_RESOURCES_TO_RETURN) -> List[Dict[str, Any]]:

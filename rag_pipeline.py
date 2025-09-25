@@ -31,23 +31,33 @@ class RAGPipeline:
         self.embeddings = None
     
     def setup_pipeline(self, load_existing_embeddings: bool = True) -> bool:
-        """Setup the complete RAG pipeline"""
+        """Setup the complete RAG pipeline with incremental PDF processing"""
         try:
             print("[INFO] Setting up RAG pipeline...")
             
-            # Try to load existing embeddings first
+            # Always try to load existing embeddings first
             if load_existing_embeddings and EMBEDDINGS_CSV_PATH.exists():
                 print("[INFO] Loading existing embeddings...")
                 self.embeddings, self.text_chunks = self.embedding_manager.load_embeddings()
             else:
-                print("[INFO] Creating new embeddings from PDF...")
-                # Process PDF
-                pages_and_texts = self.pdf_processor.process_pdf()
-                
-                # Process text
-                self.text_chunks = self.text_processor.process_text(pages_and_texts)
-                
-                # Create embeddings
+                print("[INFO] No existing embeddings found")
+                self.embeddings = None
+                self.text_chunks = []
+            
+            # Check for unprocessed PDFs to add incrementally
+            unprocessed_pdfs = self._get_unprocessed_pdfs()
+            
+            if unprocessed_pdfs:
+                print(f"[INFO] Found {len(unprocessed_pdfs)} unprocessed PDF(s)")
+                for pdf_path in unprocessed_pdfs:
+                    print(f"[INFO] Processing new PDF: {pdf_path.name}")
+                    self._process_and_append_pdf(pdf_path)
+            elif self.embeddings is None:
+                # No existing embeddings and no PDFs to process
+                print("[WARNING] No embeddings or PDFs found to process")
+                return False
+            else:
+                print("[INFO] All PDFs already processed, using existing embeddings")
                 self.embeddings = self.embedding_manager.create_embeddings(self.text_chunks)
                 
                 # Save embeddings
@@ -75,7 +85,8 @@ class RAGPipeline:
     def ask(self, query: str, temperature: float = DEFAULT_TEMPERATURE,
            max_new_tokens: int = DEFAULT_MAX_NEW_TOKENS,
            n_resources: int = DEFAULT_N_RESOURCES_TO_RETURN,
-           return_context: bool = False, stream: bool = False) -> str:
+           return_context: bool = False, stream: bool = False,
+           chat_history: List[Dict[str, str]] = None) -> str:
         """
         Ask a question to the RAG system
         Returns the answer or (answer, context_items) if return_context=True
@@ -92,7 +103,8 @@ class RAGPipeline:
             context_items=context_items,
             temperature=temperature,
             max_new_tokens=max_new_tokens,
-            stream=stream
+            stream=stream,
+            chat_history=chat_history
         )
         
         if return_context:
@@ -217,6 +229,110 @@ class RAGPipeline:
                 break
             except Exception as e:
                 print(f"[ERROR] {e}")
+    
+    def _get_unprocessed_pdfs(self) -> List[Path]:
+        """Get list of PDFs that haven't been processed yet"""
+        from pathlib import Path
+        import json
+        
+        # Find all PDFs in uploaded_pdfs directory
+        uploaded_pdfs_dir = Path("data/uploaded_pdfs")
+        if not uploaded_pdfs_dir.exists():
+            return []
+        
+        pdf_files = list(uploaded_pdfs_dir.glob("*.pdf"))
+        if not pdf_files:
+            return []
+        
+        # Load processed PDFs tracking file
+        processed_pdfs_file = Path("data/processed_pdfs.json")
+        processed_pdfs = set()
+        
+        if processed_pdfs_file.exists():
+            try:
+                with open(processed_pdfs_file, 'r', encoding='utf-8') as f:
+                    processed_data = json.load(f)
+                    processed_pdfs = set(processed_data.get('processed_files', []))
+            except (json.JSONDecodeError, KeyError):
+                processed_pdfs = set()
+        
+        # Find unprocessed PDFs
+        unprocessed_pdfs = []
+        for pdf_file in pdf_files:
+            pdf_key = f"{pdf_file.name}_{pdf_file.stat().st_mtime}"
+            if pdf_key not in processed_pdfs:
+                unprocessed_pdfs.append(pdf_file)
+        
+        return unprocessed_pdfs
+    
+    def _mark_pdf_as_processed(self, pdf_path: Path):
+        """Mark a PDF as processed"""
+        import json
+        
+        processed_pdfs_file = Path("data/processed_pdfs.json")
+        processed_data = {'processed_files': []}
+        
+        # Load existing data
+        if processed_pdfs_file.exists():
+            try:
+                with open(processed_pdfs_file, 'r', encoding='utf-8') as f:
+                    processed_data = json.load(f)
+            except (json.JSONDecodeError, KeyError):
+                processed_data = {'processed_files': []}
+        
+        # Add new PDF
+        pdf_key = f"{pdf_path.name}_{pdf_path.stat().st_mtime}"
+        if pdf_key not in processed_data['processed_files']:
+            processed_data['processed_files'].append(pdf_key)
+        
+        # Save updated data
+        processed_pdfs_file.parent.mkdir(exist_ok=True)
+        with open(processed_pdfs_file, 'w', encoding='utf-8') as f:
+            json.dump(processed_data, f, ensure_ascii=False, indent=2)
+    
+    def _process_and_append_pdf(self, pdf_path: Path):
+        """Process a single PDF and append its embeddings to existing ones"""
+        import numpy as np
+        
+        try:
+            # Create temporary PDF processor for this specific PDF
+            temp_pdf_processor = PDFProcessor(pdf_path)
+            
+            # Process PDF
+            pages_and_texts = temp_pdf_processor.process_pdf()
+            
+            # Process text
+            new_text_chunks = self.text_processor.process_text(pages_and_texts)
+            
+            # Create embeddings for new chunks
+            new_embeddings = self.embedding_manager.create_embeddings(new_text_chunks)
+            
+            # Append to existing data
+            if self.embeddings is not None and len(self.text_chunks) > 0:
+                # Combine embeddings
+                self.embeddings = np.vstack([self.embeddings, new_embeddings])
+                # Combine text chunks
+                self.text_chunks.extend(new_text_chunks)
+                print(f"[INFO] Appended {len(new_text_chunks)} chunks to existing {len(self.text_chunks) - len(new_text_chunks)} chunks")
+            else:
+                # First PDF
+                self.embeddings = new_embeddings
+                self.text_chunks = new_text_chunks
+                print(f"[INFO] Created initial embeddings with {len(new_text_chunks)} chunks")
+            
+            # Save updated embeddings
+            self.embedding_manager.embeddings = self.embeddings
+            self.embedding_manager.text_chunks = self.text_chunks
+            self.embedding_manager.save_embeddings()
+            
+            # Mark PDF as processed
+            self._mark_pdf_as_processed(pdf_path)
+            
+            print(f"[INFO] Successfully processed and saved: {pdf_path.name}")
+            
+        except Exception as e:
+            print(f"[ERROR] Failed to process PDF {pdf_path.name}: {e}")
+            raise
     
     def _print_help(self):
         """Print help information"""

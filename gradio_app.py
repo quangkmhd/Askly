@@ -119,7 +119,15 @@ def respond(message, chat_history):
         return "", chat_history + [[message, "Hệ thống chưa sẵn sàng. Vui lòng tải lên tài liệu PDF."]]
     
     try:
-        answer = rag_pipeline.ask(message)
+        # Convert Gradio chat history to our format
+        formatted_history = []
+        for user_msg, bot_msg in chat_history:
+            if user_msg:
+                formatted_history.append({'role': 'user', 'content': user_msg})
+            if bot_msg:
+                formatted_history.append({'role': 'assistant', 'content': bot_msg})
+        
+        answer = rag_pipeline.ask(message, chat_history=formatted_history)
         chat_history.append((message, answer))
         return "", chat_history
     except Exception as e:

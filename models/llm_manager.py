@@ -230,7 +230,7 @@ class LLMManager:
 
         return self.generate_text(prompt=prompt, temperature=temperature, max_new_tokens=max_new_tokens)
 
-    def format_rag_prompt(self, query: str, context_items: List[Dict[str, Any]]) -> str:
+    def format_rag_prompt(self, query: str, context_items: List[Dict[str, Any]], chat_history: List[Dict[str, str]] = None) -> str:
         if self.use_remote:
             context_parts = []
             for i, item in enumerate(context_items, 1):
@@ -241,35 +241,71 @@ class LLMManager:
             is_vietnamese = any(c.isalpha() and ord(c) > 127 for c in query)
             
             if is_vietnamese:
-                base_prompt = f"""Bạn là một trợ lý giúp trả lời câu hỏi dựa trên ngữ cảnh từ sách Dinh dưỡng Con người.
+                # Format chat history if provided
+                history_text = ""
+                if chat_history and len(chat_history) > 0:
+                    history_parts = []
+                    for msg in chat_history[-6:]:  # Only keep last 6 messages to avoid too long context
+                        if msg.get('role') == 'user':
+                            history_parts.append(f"Người dùng: {msg.get('content', '')}")
+                        elif msg.get('role') == 'assistant':
+                            history_parts.append(f"Trợ lý: {msg.get('content', '')}")
+                    if history_parts:
+                        history_text = f"\n\nLỊCH SỬ CUỘC TRÒ CHUYỆN:\n" + "\n".join(history_parts) + "\n"
 
-NGỮ CẢNH:
-{context}
+                base_prompt = f"""Bạn là một trợ lý thông minh và linh hoạt, có thể trả lời câu hỏi dựa trên tài liệu và kiến thức tổng quát.
+
+NGỮ CẢNH TỪ TÀI LIỆU:
+{context}{history_text}
 
         HƯỚNG DẪN:
-        - Trả lời trực tiếp, không sử dụng các cụm từ như "Theo ngữ cảnh được cung cấp", "Dựa trên thông tin", v.v.
-        - Trả lời ngắn gọn, súc tích nhưng đầy đủ thông tin
-        - CHỈ sử dụng thông tin từ ngữ cảnh được cung cấp
-        - Nếu không có thông tin, trả lời ngắn gọn "Không tìm thấy thông tin về điều này trong tài liệu"
-        - Trả lời bằng tiếng Việt, sử dụng từ ngữ dễ hiểu
-        - Nếu là danh sách hoặc mục lục, liệt kê trực tiếp không cần giới thiệu
+        - Trả lời trực tiếp, tự nhiên như một chuyên gia am hiểu
+        - ƯU TIÊN sử dụng thông tin từ tài liệu nếu có liên quan
+        - Nếu tài liệu có thông tin LIÊN QUAN nhưng không đầy đủ, hãy KẾT HỢP với kiến thức chung để đưa ra câu trả lời hoàn chỉnh
+        - Nếu tài liệu không có thông tin, hãy sử dụng KIẾN THỨC TỔNG QUÁT để trả lời một cách hữu ích
+        - Hãy PHÂN TÍCH và TỔNG HỢP thông tin từ nhiều đoạn ngữ cảnh để đưa ra câu trả lời hoàn chỉnh
+        - Nếu câu hỏi không khớp chính xác với nội dung, hãy tìm thông tin LIÊN QUAN và suy luận hợp lý
+        - Có thể đưa ra lời khuyên, giải thích khái niệm, so sánh, phân tích dựa trên hiểu biết chung
+        - Nếu có lịch sử cuộc trò chuyện, hãy tham khảo để duy trì ngữ cảnh
+        - Trả lời bằng tiếng Việt, sử dụng từ ngữ dễ hiểu và thân thiện
+        - Hãy sáng tạo và hữu ích: có thể đưa ra ví dụ, gợi ý, hoặc thông tin bổ sung
+        - Hãy suy luận thông minh: ví dụ "học phí của trường" có thể liên quan đến "học phí các ngành", "chi phí đào tạo", v.v.
+        - Chỉ nói "Tôi không biết" khi thực sự không thể trả lời được
 
 CÂU HỎI: {query}
 
 TRẢ LỜI:"""
             else:
-                base_prompt = f"""You are a helpful assistant that answers questions based on the provided context from a Human Nutrition textbook.
+                # Format chat history if provided
+                history_text = ""
+                if chat_history and len(chat_history) > 0:
+                    history_parts = []
+                    for msg in chat_history[-6:]:  # Only keep last 6 messages to avoid too long context
+                        if msg.get('role') == 'user':
+                            history_parts.append(f"User: {msg.get('content', '')}")
+                        elif msg.get('role') == 'assistant':
+                            history_parts.append(f"Assistant: {msg.get('content', '')}")
+                    if history_parts:
+                        history_text = f"\n\nCONVERSATION HISTORY:\n" + "\n".join(history_parts) + "\n"
 
-CONTEXT:
-{context}
+                base_prompt = f"""You are an intelligent and flexible assistant that can answer questions using both document context and general knowledge.
+
+DOCUMENT CONTEXT:
+{context}{history_text}
 
         INSTRUCTIONS:
-        - Answer directly without phrases like "Based on the context", "According to the information", etc.
-        - Keep answers concise but informative
-        - Use ONLY information from the provided context
-        - If information is not found, simply respond "This information is not available in the document"
+        - Answer directly and naturally like a knowledgeable expert
+        - PRIORITIZE information from the document if relevant
+        - If the document has RELATED but incomplete information, COMBINE it with general knowledge for a complete answer
+        - If the document lacks information, use GENERAL KNOWLEDGE to provide helpful responses
+        - ANALYZE and SYNTHESIZE information from multiple context sections to provide complete answers
+        - If the question doesn't match exactly, find RELATED information and make reasonable inferences
+        - You can give advice, explain concepts, compare, and analyze based on common understanding
+        - If there's conversation history, refer to it to maintain context
         - Answer in the same language as the user's question
-        - For lists or table of contents, list items directly without introduction
+        - Be creative and helpful: provide examples, suggestions, or additional information
+        - Think intelligently: e.g., "school tuition" might relate to "program fees", "training costs", etc.
+        - Only say "I don't know" when you truly cannot provide any useful response
 
 USER QUERY: {query}
 
@@ -311,8 +347,9 @@ Answer:"""
         max_new_tokens: int = DEFAULT_MAX_NEW_TOKENS,
         format_answer: bool = True,
         stream: bool = False,
+        chat_history: List[Dict[str, str]] = None,
     ) -> str:
-        prompt = self.format_rag_prompt(query, context_items)
+        prompt = self.format_rag_prompt(query, context_items, chat_history)
         output_text = self.generate_text(prompt=prompt, temperature=temperature, max_new_tokens=max_new_tokens, stream=stream)
 
         if format_answer:
