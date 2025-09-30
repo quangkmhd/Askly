@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Askly - Chat với Tài liệu PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar - Document Management -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="app-title">
+                    <i class="fas fa-book-reader"></i>
+                    Askly
+                </h1>
+                <p class="app-subtitle">Chat với Tài liệu PDF</p>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept=".pdf" hidden>
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Tải lên PDF mới</h3>
+                    <p>Kéo và thả hoặc <span class="browse-link">chọn tệp</span></p>
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="progress-bar">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <p class="progress-text">Đang xử lý tài liệu...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document List -->
+            <div class="documents-section">
+                <div class="section-header">
+                    <h3>
+                        <i class="fas fa-folder-open"></i>
+                        Cơ sở Tri thức
+                    </h3>
+                    <button class="reload-btn" id="reloadBtn" title="Tải lại cơ sở tri thức">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                <div class="documents-list" id="documentsList">
+                    <div class="empty-state">
+                        <i class="fas fa-file-pdf"></i>
+                        <p>Chưa có tài liệu nào</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings (Optional) -->
+            <div class="settings-section">
+                <button class="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    Cài đặt
+                </button>
+            </div>
+        </aside>
+
+        <!-- Right Main Content - Chat Interface -->
+        <main class="main-content">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <h2>Hỏi tài liệu của bạn</h2>
+                    <div class="knowledge-status" id="knowledgeStatus">
+                        <i class="fas fa-database"></i>
+                        <span>Cơ sở tri thức: <strong id="docCount">0</strong> tệp PDF đã sẵn sàng</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>Chào mừng đến với Askly!</h3>
+                        <p>Vui lòng tải lên tài liệu PDF để bắt đầu. Bạn có thể hỏi bất cứ điều gì về các tài liệu đã tải lên.</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <textarea 
+                            id="chatInput" 
+                            class="chat-input" 
+                            placeholder="Đặt câu hỏi của bạn..."
+                            rows="1"></textarea>
+                        <button class="send-btn" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cài đặt</h3>
+                <button class="modal-close" id="closeSettings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label>Mô hình LLM</label>
+                    <select class="setting-select">
+                        <option>Gemini API</option>
+                        <option>Local Model</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label>API Key</label>
+                    <input type="password" class="setting-input" placeholder="Nhập API Key của bạn">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
