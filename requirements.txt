@@ -1,0 +1,45 @@
+# Core dependencies
+PyMuPDF==1.23.26
+matplotlib==3.8.3
+numpy==1.26.4
+pandas==2.2.1
+Requests==2.31.0
+python-dotenv
+tqdm==4.66.2
+
+# Deep Learning & NLP
+tensorflow>=2.13.0
+tensorflow-hub>=0.14.0
+transformers>=4.46.0
+torch>=2.0.0
+tiktoken>=0.5.0  # OpenAI tokenizer for accurate token counting
+# Optional: Cross-encoder for reranking (uncomment if needed)
+# sentence-transformers>=2.2.0
+spacy
+accelerate
+bitsandbytes
+peft>=0.16.0
+safetensors
+
+# API Backend (NEW)
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# Evaluation Framework (NEW)
+bert-score>=0.3.13
+rouge-score>=0.1.2
+nltk>=3.8.0
+
+# Development tools
+jupyter
+wheel
+streamlit==1.31.1
+
+# OCR for scanned PDFs
+pytesseract>=0.3.10
+Pillow>=10.0.0
+
+# Optional
+# flash-attn
+# sentence-transformers>=2.2.0  # For cross-encoder reranking
