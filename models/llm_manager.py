@@ -11,10 +11,10 @@ from transformers.utils import is_flash_attn_2_available
 from peft import PeftModel, PeftConfig
 
 from config.config import (
-    LLM_MODEL_ID, LLM_DEVICE, LLM_TORCH_DTYPE, USE_QUANTIZATION,
-    USE_FLASH_ATTENTION, DEFAULT_TEMPERATURE, DEFAULT_MAX_NEW_TOKENS,
-    USE_REMOTE, BASE_URL, API_KEY, REMOTE_MODEL_NAME,
-    USE_PEFT_ADAPTER, LLM_BASE_MODEL, LLM_ADAPTER_PATH,
+    LLM_DEVICE, USE_QUANTIZATION,
+    DEFAULT_TEMPERATURE, DEFAULT_MAX_NEW_TOKENS,
+    USE_REMOTE, API_KEY, REMOTE_MODEL_NAME,
+    LLM_MODEL_PATH,
 )
 from utils.utils import get_gpu_memory_gb, recommend_model_config, get_model_mem_size
 
@@ -22,18 +22,18 @@ from utils.utils import get_gpu_memory_gb, recommend_model_config, get_model_mem
 class LLMManager:
     """Handles LLM loading, configuration, and text generation"""
 
-    def __init__(self, model_id: str = LLM_MODEL_ID, device: str = LLM_DEVICE):
-        self.model_id = model_id
+    def __init__(self, model_path: str = str(LLM_MODEL_PATH), device: str = LLM_DEVICE):
+        self.model_path = model_path
         self.device = device
         self.model = None
         self.tokenizer = None
         self.use_quantization = USE_QUANTIZATION
-        self.attn_implementation = None
         self.use_remote = USE_REMOTE
 
     # ---------------- Local (HF) helpers ----------------
 
     def _setup_quantization_config(self) -> Optional[BitsAndBytesConfig]:
+        """Setup 4-bit quantization to save VRAM"""
         if not self.use_quantization:
             return None
         return BitsAndBytesConfig(
@@ -43,118 +43,49 @@ class LLMManager:
             bnb_4bit_compute_dtype=torch.float16
         )
 
-    def _setup_attention_implementation(self) -> str:
-        if USE_FLASH_ATTENTION and torch.cuda.is_available():
-            if is_flash_attn_2_available() and torch.cuda.get_device_capability(0)[0] >= 8:
-                return "flash_attention_2"
-        return "sdpa"
-
-    def _auto_configure_model(self) -> Tuple[str, bool]:
-        gpu_memory_gb = get_gpu_memory_gb()
-        if gpu_memory_gb == 0:
-            print("[WARNING] No GPU detected, using CPU")
-            return "google/gemma-2b-it", True
-        model_id, use_quantization = recommend_model_config(gpu_memory_gb)
-        print(f"[INFO] GPU memory: {gpu_memory_gb}GB | Recommended model: {model_id}")
-        print(f"[INFO] Use quantization: {use_quantization}")
-        return model_id, use_quantization
-
-    # ---------------- Load (remote vs local) ----------------
-
-    def load_model(self, auto_configure: bool = True):
-        """Either set up remote (Gemini) or load local HF model (with optional PEFT adapter)"""
+    def load_model(self):
+        """Load model - Gemini API hoặc local model"""
         if self.use_remote:
-            # Remote inference via Google Generative Language API (Gemini)
-            print(f"[INFO] Using remote Gemini model '{REMOTE_MODEL_NAME}' via Google Generative Language API")
-            self.model_id = REMOTE_MODEL_NAME
-            self.tokenizer = None
+            # Gemini API
+            print(f"[INFO] Using Gemini API: {REMOTE_MODEL_NAME}")
             self.model = None
+            self.tokenizer = None
             return
-
-        # Check if we should load PEFT adapter
-        if USE_PEFT_ADAPTER:
-            print(f"[INFO] Loading PEFT adapter from: {LLM_ADAPTER_PATH}")
-            self._load_peft_model()
-            return
-
-        # Local Hugging Face model (fallback)
-        if auto_configure:
-            self.model_id, self.use_quantization = self._auto_configure_model()
-
-        print(f"[INFO] Loading LLM model: {self.model_id}")
-        self.attn_implementation = self._setup_attention_implementation()
-        print(f"[INFO] Using attention implementation: {self.attn_implementation}")
-        print(f"[INFO] Using quantization: {self.use_quantization}")
-
-        print("[INFO] Loading tokenizer...")
-        self.tokenizer = AutoTokenizer.from_pretrained(pretrained_model_name_or_path=self.model_id)
-
-        print("[INFO] Loading model...")
+        
+        # Load local model
+        from pathlib import Path
+        model_path = Path(self.model_path)
+        
+        if not model_path.exists() or not any(model_path.iterdir()):
+            raise RuntimeError(f"Model not found in {model_path}. Please copy your model there.")
+        
+        print(f"[INFO] Loading model from: {model_path}")
+        
+        # Load tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            str(model_path),
+            trust_remote_code=True
+        )
+        
+        # Setup model kwargs
         model_kwargs = {
-            "pretrained_model_name_or_path": self.model_id,
-            "torch_dtype": getattr(torch, LLM_TORCH_DTYPE),
-            "low_cpu_mem_usage": False,
-            "attn_implementation": self.attn_implementation,
+            "pretrained_model_name_or_path": str(model_path),
+            "torch_dtype": torch.float16,
+            "device_map": "auto" if self.device == "cuda" else None,
+            "low_cpu_mem_usage": True,
+            "trust_remote_code": True,
         }
-        qcfg = self._setup_quantization_config()
-        if qcfg is not None:
-            model_kwargs["quantization_config"] = qcfg
-
+        
+        # Add quantization
+        if self.use_quantization:
+            print("[INFO] Using 4-bit quantization")
+            model_kwargs["quantization_config"] = self._setup_quantization_config()
+        
+        # Load model
         self.model = AutoModelForCausalLM.from_pretrained(**model_kwargs)
-
-        if not self.use_quantization and self.device != "cpu":
-            self.model.to(self.device)
-
-        print(f"[INFO] Model loaded successfully on {self.device}")
+        
+        print(f"[INFO] ✅ Model loaded on {self.device}")
         self._print_model_info()
-
-    def _load_peft_model(self):
-        """Load base model and apply PEFT adapter"""
-        try:
-            print(f"[INFO] Loading base model: {LLM_BASE_MODEL}")
-            
-            # Load tokenizer from base model
-            self.tokenizer = AutoTokenizer.from_pretrained(LLM_BASE_MODEL)
-            
-            # Setup quantization if enabled
-            model_kwargs = {
-                "torch_dtype": getattr(torch, LLM_TORCH_DTYPE),
-                "device_map": "auto" if self.device == "cuda" else None,
-                "low_cpu_mem_usage": True,
-                "trust_remote_code": True,
-            }
-            
-            if self.use_quantization:
-                print("[INFO] Using 4-bit quantization (reduces memory from ~6GB to ~2GB)")
-                qcfg = self._setup_quantization_config()
-                model_kwargs["quantization_config"] = qcfg
-            
-            # Load base model
-            base_model = AutoModelForCausalLM.from_pretrained(
-                LLM_BASE_MODEL,
-                **model_kwargs
-            )
-            
-            print(f"[INFO] Loading PEFT adapter from: {LLM_ADAPTER_PATH}")
-            # Load adapter (don't merge if quantized - not supported)
-            self.model = PeftModel.from_pretrained(base_model, str(LLM_ADAPTER_PATH))
-            
-            # Only merge if not quantized
-            if not self.use_quantization:
-                print("[INFO] Merging adapter weights...")
-                self.model = self.model.merge_and_unload()
-                if self.device == "cpu":
-                    self.model.to("cpu")
-            else:
-                print("[INFO] Adapter loaded (not merged due to quantization)")
-            
-            self.model_id = f"{LLM_BASE_MODEL} + LoRA adapter"
-            print(f"[INFO] PEFT model loaded successfully on {self.device}")
-            self._print_model_info()
-            
-        except Exception as e:
-            print(f"[ERROR] Failed to load PEFT model: {e}")
-            raise
 
     def _print_model_info(self):
         if self.model is None:

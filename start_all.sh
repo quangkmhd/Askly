@@ -146,8 +146,9 @@ echo ""
 # Đợi log file được tạo
 sleep 2
 
-# Quay về thư mục gốc
-cd /home/tuanhq/project/askly2/askly
+# Quay về thư mục gốc (sử dụng biến động thay vì hardcoded path)
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR"
 
 if [ -f "backend.log" ]; then
     tail -f backend.log &

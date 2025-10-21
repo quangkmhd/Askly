@@ -19,7 +19,8 @@ def build_embeddings():
     print("BUILDING EMBEDDINGS FROM PDFs")
     print("=" * 80)
     
-    from build_embeddings_multi import main as build_main
+    # Use rebuild_embeddings_semantic module with semantic chunking
+    from rebuild_embeddings_semantic import main as build_main
     build_main()
 
 def run_interactive():

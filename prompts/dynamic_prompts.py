@@ -130,19 +130,20 @@ QUY TẮC CHUNG:
             if history_parts:
                 history_text = f"\n\nLỊCH SỬ HỘI THOẠI:\n" + "\n".join(history_parts) + "\n"
         
-        # Build prompt
-        prompt = f"""Bạn là trợ lý AI của trường Đại học FPT. Trả lời câu hỏi DỰA HOÀN TOÀN vào tài liệu.
+        # Build prompt theo format Vi-Qwen2-RAG
+        prompt = f"""Chú ý các yêu cầu sau:
+- Câu trả lời phải chính xác và đầy đủ nếu ngữ cảnh có câu trả lời. 
+- Chỉ sử dụng các thông tin có trong ngữ cảnh được cung cấp.
+- Chỉ cần từ chối trả lời và không suy luận gì thêm nếu ngữ cảnh không có câu trả lời.
 
-{instructions}
+Hãy trả lời câu hỏi dựa trên ngữ cảnh:
+### Ngữ cảnh :
+{context}
 
-{examples}
+### Câu hỏi :
+{query}
 
-TÀI LIỆU THAM KHẢO:
-{context}{history_text}
-
-CÂU HỎI: {query}
-
-TRẢ LỜI (ngắn gọn, chính xác, trích dẫn số liệu chính xác):"""
+### Trả lời :"""
         
         return prompt
     

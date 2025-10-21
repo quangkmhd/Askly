@@ -57,21 +57,11 @@ API_KEY = _get("API_KEY")
 BASE_URL = _get("BASE_URL")
 REMOTE_MODEL_NAME = _get("MODEL")
 
-# Force use local LLM only (Gemini API disabled)
-USE_REMOTE = False  # Always use local model
-
-# ----- Local LLM settings with LoRA adapter -----
-# Base model for the fine-tuned adapter
-LLM_BASE_MODEL = "Qwen/Qwen2.5-3B-Instruct"
-# Path to the LoRA adapter
-LLM_ADAPTER_PATH = MODELS_DIR / "model"
-# Use the adapter path as model ID
-LLM_MODEL_ID = str(LLM_ADAPTER_PATH)
+# LLM Settings - Chỉ cần paste model vào models/model/ là chạy
+USE_REMOTE = False  # True = Gemini API, False = Local model
+LLM_MODEL_PATH = MODELS_DIR / "model"  # Paste model vào đây
 LLM_DEVICE = "cuda" if (TORCH_AVAILABLE and torch.cuda.is_available()) else "cpu"
-LLM_TORCH_DTYPE = "float16"
-USE_QUANTIZATION = True  # Enable 4-bit quantization for 4GB VRAM
-USE_FLASH_ATTENTION = False  # Disable for compatibility
-USE_PEFT_ADAPTER = True  # Enable PEFT adapter loading
+USE_QUANTIZATION = True  # Tiết kiệm VRAM
 
 
 # Generation settings (OPTIMIZED: Accuracy + Conciseness)
