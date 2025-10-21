@@ -4,7 +4,7 @@
 
 Askly cung cấp RESTful API để tích hợp vào các ứng dụng khác. API được xây dựng bằng Flask và hỗ trợ CORS.
 
-**Base URL**: `http://localhost:5000`
+**Base URL**: `http://localhost:8000`
 
 ## Authentication
 
@@ -32,7 +32,7 @@ Kiểm tra trạng thái của API server và RAG pipeline.
 
 **Example**:
 ```bash
-curl http://localhost:5000/health
+curl http://localhost:8000/health
 ```
 
 ---
@@ -87,7 +87,7 @@ Content-Type: application/json
 
 **Example**:
 ```bash
-curl -X POST http://localhost:5000/ask \
+curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{
     "question": "Học phí là bao nhiêu?",
@@ -100,7 +100,7 @@ curl -X POST http://localhost:5000/ask \
 import requests
 
 response = requests.post(
-    'http://localhost:5000/ask',
+    'http://localhost:8000/ask',
     json={
         'question': 'Học phí là bao nhiêu?',
         'n_resources': 5,
@@ -113,7 +113,7 @@ print(data['answer'])
 ```
 
 ```javascript
-const response = await fetch('http://localhost:5000/ask', {
+const response = await fetch('http://localhost:8000/ask', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ Content-Type: application/json
 
 **Example**:
 ```bash
-curl -X POST http://localhost:5000/search \
+curl -X POST http://localhost:8000/search \
   -H "Content-Type: application/json" \
   -d '{
     "query": "Học phí",
@@ -247,7 +247,7 @@ import aiohttp
 async def ask_multiple(questions):
     async with aiohttp.ClientSession() as session:
         tasks = [
-            session.post('http://localhost:5000/ask', json={'question': q})
+            session.post('http://localhost:8000/ask', json={'question': q})
             for q in questions
         ]
         responses = await asyncio.gather(*tasks)
@@ -260,7 +260,7 @@ Luôn handle errors:
 
 ```python
 try:
-    response = requests.post('http://localhost:5000/ask', json=data, timeout=30)
+    response = requests.post('http://localhost:8000/ask', json=data, timeout=30)
     response.raise_for_status()
     return response.json()
 except requests.exceptions.Timeout:
@@ -278,7 +278,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
 def ask_with_retry(question):
-    response = requests.post('http://localhost:5000/ask', json={'question': question})
+    response = requests.post('http://localhost:8000/ask', json={'question': question})
     response.raise_for_status()
     return response.json()
 ```
@@ -294,7 +294,7 @@ import requests
 from typing import Dict, List, Optional
 
 class AsklyClient:
-    def __init__(self, base_url: str = "http://localhost:5000"):
+    def __init__(self, base_url: str = "http://localhost:8000"):
         self.base_url = base_url
         
     def health_check(self) -> Dict:
@@ -358,7 +358,7 @@ print(f"Found {len(results['results'])} documents")
 ```javascript
 import { useState } from 'react';
 
-export const useAskly = (baseUrl = 'http://localhost:5000') => {
+export const useAskly = (baseUrl = 'http://localhost:8000') => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -448,20 +448,23 @@ function ChatComponent() {
 
 ---
 
-## Changelog
+## API Features
 
-### v2.0.0 (Current)
+### Hiện có
 - ✅ Flask API với CORS support
-- ✅ Health check endpoint
-- ✅ Ask và Search endpoints
-- ✅ Error handling
-- ✅ JSON response format
+- ✅ Health check endpoint (`/health`)
+- ✅ Ask endpoint (`/ask`) - Hỏi câu hỏi với RAG
+- ✅ Search endpoint (`/search`) - Tìm kiếm tài liệu
+- ✅ Clear endpoint (`/clear`) - Xóa lịch sử chat
+- ✅ Error handling và validation
+- ✅ JSON response format chuẩn
 
-### Future
-- [ ] Authentication (API keys)
-- [ ] Rate limiting
-- [ ] WebSocket support cho streaming
+### Roadmap
+- [ ] Authentication (API keys, OAuth)
+- [ ] Rate limiting (100 req/min)
+- [ ] WebSocket support cho streaming real-time
 - [ ] Batch processing endpoint
-- [ ] File upload endpoint
-- [ ] Conversation history API
+- [ ] File upload endpoint (PDF upload qua API)
+- [ ] Conversation history API (lưu/load chat history)
+- [ ] Analytics endpoint (usage stats)
 

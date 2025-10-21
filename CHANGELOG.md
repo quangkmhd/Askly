@@ -1,116 +1,112 @@
 # Changelog
 
-All notable changes to FPTU Chatbot project.
+Lịch sử phát triển và cải tiến của Askly RAG System.
 
-## [2.0.0] - 2025-10-17
+---
 
-### 🎉 Major RAG Improvements
+## 🎉 RAG System Improvements - October 17, 2025
 
-#### Added
-- **Semantic Chunking**: 2000 tokens per chunk with header preservation
-- **Intent Classification**: Auto-detect query type (tuition_fee, admission, grades, etc.)
-- **Standalone Questions**: Multi-turn context resolution from chat history
-- **Dynamic Prompts**: Intent-specific prompts with few-shot examples
-- **Keyword Search**: Fallback search for specific topics (học phí, điểm, etc.)
-- **Heuristic Reranking**: Boost relevant chunks based on keywords and headers
-- **Query Processor**: Separate module for intent classification and query rewriting
+### Tính năng mới
 
-#### Changed
-- **LLM Parameters**: Lowered temperature to 0.1, increased repetition_penalty to 1.5
-- **Chunk Size**: Increased from 500 tokens to 2000 tokens
-- **Retrieval**: Hybrid approach (keyword + semantic search)
-- **Prompts**: Stricter prompts with explicit instructions to prevent hallucination
+#### Document Processing
+- **Semantic Chunking**: Chia tài liệu thành chunks 2000 tokens với bảo toàn headers
+- **OCR Support**: Tesseract OCR cho PDF scan với image preprocessing
+- **Legal Document Support**: Tối ưu cho văn bản pháp lý (Điều, Chương, Mục)
+- **Smart Footer Removal**: Tự động phát hiện và loại bỏ header/footer lặp
 
-#### Performance
-- Retrieval accuracy: 40% → 80%+ (+100%)
-- Answer quality: 50% → 85%+ (+70%)
-- Multi-turn understanding: 20% → 85%+ (+325%)
-- Hallucination rate: 30% → 10-15% (-50%)
+#### Retrieval & Search
+- **Hybrid Search**: Kết hợp keyword search + semantic search
+- **Intent Classification**: Tự động phân loại câu hỏi (học phí, tuyển sinh, điểm...)
+- **Heuristic Reranking**: Xếp hạng lại dựa trên keywords và headers
+- **Query Processor**: Module xử lý intent và standalone questions
 
-#### Files Added
+#### LLM & Generation
+- **Dynamic Prompts**: Prompts tùy chỉnh theo intent với few-shot examples
+- **Multi-turn Context**: Hiểu ngữ cảnh từ lịch sử chat
+- **Optimized Parameters**: Temperature=0.1, repetition_penalty=1.5
+- **4-bit Quantization**: Chạy local LLM trên 4GB VRAM
+
+### Cải tiến hiệu năng
+
+| Metric | Trước | Sau | Cải thiện |
+|--------|-------|-----|-----------|
+| Retrieval accuracy | 40% | 80%+ | +100% |
+| Answer quality | 50% | 85%+ | +70% |
+| Multi-turn understanding | 20% | 85%+ | +325% |
+| Hallucination rate | 30% | 10-15% | -50% |
+| Chunk context | 500 tokens | 2000 tokens | +300% |
+
+### Files mới
+
 - `processors/semantic_chunker.py` - Semantic chunking engine
-- `utils/query_processor.py` - Intent classification and query rewriting
+- `utils/query_processor.py` - Intent classification và query rewriting
 - `prompts/dynamic_prompts.py` - Dynamic prompt generator
 - `models/reranker.py` - Heuristic reranking system
-- `rebuild_embeddings_semantic.py` - Rebuild script with semantic chunking
-- `docs/RAG_IMPROVEMENTS.md` - Comprehensive improvements documentation
-- `docs/PROJECT_SUMMARY.md` - Project overview
+- `rebuild_embeddings_semantic.py` - Rebuild embeddings với semantic chunking
+- `setup_ocr.sh` - OCR installation script
 - `cleanup.sh` - Project cleanup script
 
-#### Files Modified
-- `processors/document_chunker.py` - Added semantic chunking option
-- `models/retrieval_system.py` - Added reranking support
-- `rag_pipeline.py` - Enhanced ask() with intent-based processing
-- `config/config.py` - Updated default parameters
-- `models/llm_manager.py` - Optimized generation parameters
-- `requirements.txt` - Added tiktoken dependency
+### Files cập nhật
+
+- `processors/document_chunker.py` - Thêm semantic chunking, OCR preprocessing
+- `models/retrieval_system.py` - Thêm hybrid search và reranking
+- `rag_pipeline.py` - Tích hợp intent classification và standalone questions
+- `config/config.py` - Cập nhật parameters (temp=0.1, chunks=2000)
+- `models/llm_manager.py` - Tối ưu generation parameters
+- `requirements.txt` - Thêm tiktoken, pytesseract, bert-score
 
 ---
 
-## [1.5.0] - 2025-10-15
+## 🐛 Bug Fixes - October 19, 2025
 
-### OCR Support
+### Lỗi nghiêm trọng đã sửa
 
-#### Added
-- **OCR Support**: Tesseract OCR for scanned PDFs
-- **Auto-detection**: Automatically detect scanned pages
-- **Hybrid Processing**: Smart switching between text extraction and OCR
-- **Multi-language**: Vietnamese + English OCR support
+1. ✅ **Key mismatch** giữa DocumentChunker và SemanticChunker (`"text"` → `"page_text"`)
+2. ✅ **Mất xuống dòng** trước khi detect headers (giữ `\n` cho semantic chunking)
+3. ✅ **Ghép câu bị dính** (`"".join` → `" ".join`)
+4. ✅ **Sentence splitter đơn giản** (thêm 40+ viết tắt tiếng Việt, legal markers)
+5. ✅ **Footer removal không an toàn** (thêm content-based detection)
+6. ✅ **OCR thiếu preprocessing** (thêm grayscale, contrast, denoising)
 
-#### Files Added
-- `setup_ocr.sh` - OCR installation script
-- `docs/OCR_SUPPORT.md` - OCR documentation
+### Cải tiến
 
----
+7. ✅ **Token counting chính xác** (tích hợp tiktoken thay vì `len/4`)
+8. ✅ **Legal anchors** (trích dẫn "Chương I / Điều 5 (tr.15)")
 
-## [1.0.0] - 2025-10-01
-
-### Initial Release
-
-#### Features
-- PDF upload and processing
-- TF-Hub embeddings (Universal Sentence Encoder)
-- Qwen2.5-3B-Instruct LLM with PEFT adapter
-- Flask REST API backend
-- React frontend with TailwindCSS
-- Chat history persistence
-- Document management
-- Incremental embedding updates
-- CUDA support
-
-#### Components
-- PDF processor with PyMuPDF
-- Text processor with cleaning and normalization
-- Embedding manager with TensorFlow Hub
-- Retrieval system with cosine similarity
-- LLM manager with 4-bit quantization
-- Web interface with drag & drop upload
+Chi tiết: Xem [BUGFIX_CHANGELOG.md](BUGFIX_CHANGELOG.md)
 
 ---
 
-## Version History
+## 📋 Feature Roadmap
 
-- **v2.0.0** (2025-10-17): RAG improvements - semantic chunking, intent classification, dynamic prompts
-- **v1.5.0** (2025-10-15): OCR support for scanned PDFs
-- **v1.0.0** (2025-10-01): Initial release with basic RAG functionality
+### Kế hoạch triển khai
 
----
-
-## Upcoming Features
-
-### Planned for v2.1.0
-- [ ] Cross-encoder reranking (sentence-transformers)
-- [ ] Query expansion with synonyms
-- [ ] Evaluation framework with BLEU/ROUGE metrics
-- [ ] Caching for frequent queries
-- [ ] Better error handling and logging
-
-### Planned for v3.0.0
-- [ ] Multi-language support (English)
+**Tính năng mới:**
+- [ ] Upload PDF qua web UI (drag & drop)
+- [ ] Multi-user authentication & sessions
+- [ ] Chat history export (JSON, PDF)
 - [ ] Document summarization
-- [ ] Advanced analytics dashboard
-- [ ] User authentication
-- [ ] Cloud deployment (Docker + Kubernetes)
+- [ ] Multi-language support (English)
+
+**Tối ưu hóa:**
+- [ ] Cross-encoder reranking (sentence-transformers)
+- [ ] Vector database (Pinecone/Weaviate/Qdrant)
+- [ ] Query expansion với synonyms
+- [ ] Query caching cho frequent questions
+- [ ] Rate limiting & monitoring
+
+**Deployment:**
+- [ ] Docker containerization
+- [ ] Docker Compose cho full stack
+- [ ] Cloud deployment (AWS/GCP/Azure)
+- [ ] Kubernetes manifests
+- [ ] CI/CD pipeline
+
+**Integrations:**
+- [ ] Thêm file formats (Word, Excel, TXT, Markdown)
+- [ ] OpenAI API support (GPT-4/GPT-3.5)
+- [ ] Anthropic Claude support
+- [ ] Webhook notifications
 
 ---
 
