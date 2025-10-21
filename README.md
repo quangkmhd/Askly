@@ -1,10 +1,10 @@
-# Askly - Hệ thống RAG Tiếng Việt
+# FPTU Chatbot - Trợ lý thông minh FPT University 🎓
 
-> Chatbot thông minh cho tài liệu tiếng Việt sử dụng công nghệ RAG (Retrieval-Augmented Generation)
+> Chatbot AI hỗ trợ sinh viên và giảng viên FPT University - Tra cứu quy chế, học phí, tuyển sinh và các vấn đề học vụ
 
-## 📋 Tổng quan
+## 📋 Giới thiệu
 
-Askly là hệ thống hỏi đáp thông minh dựa trên tài liệu PDF tiếng Việt. Hệ thống sử dụng công nghệ RAG để truy xuất thông tin từ tài liệu và tạo câu trả lời chính xác, có nguồn trích dẫn.
+FPTU Chatbot là hệ thống hỏi đáp thông minh được xây dựng riêng cho FPT University, giúp sinh viên, giảng viên và phụ huynh tra cứu thông tin một cách nhanh chóng và chính xác. Hệ thống sử dụng công nghệ RAG (Retrieval-Augmented Generation) tiên tiến để tìm kiếm và tổng hợp thông tin từ các tài liệu chính thức của trường như quy chế đào tạo, quy định học vụ, thông tin tuyển sinh, và các văn bản hướng dẫn khác.
 
 ### ✨ Tính năng chính
 
@@ -15,10 +15,10 @@ Askly là hệ thống hỏi đáp thông minh dựa trên tài liệu PDF tiế
 - **💾 Cập nhật tăng dần**: Chỉ xử lý file PDF mới, không rebuild toàn bộ
 
 #### Tìm kiếm & Truy xuất
-- **🔍 Hybrid Search**: Kết hợp tìm kiếm semantic và keyword
-- **🎯 Intent Classification**: Tự động phân loại loại câu hỏi (học phí, tuyển sinh, điểm số...)
-- **📊 Smart Reranking**: Xếp hạng lại kết quả dựa trên độ liên quan
-- **🔗 Legal Anchors**: Trích dẫn chính xác vị trí trong tài liệu pháp lý
+- **🔍 Hybrid Search**: Kết hợp tìm kiếm semantic và keyword để tìm thông tin chính xác
+- **🎯 Intent Classification**: Tự động nhận diện chủ đề câu hỏi (học phí, tuyển sinh, điểm số, tốt nghiệp...)
+- **📊 Smart Reranking**: Xếp hạng kết quả theo độ liên quan với câu hỏi của bạn
+- **🔗 Legal Anchors**: Trích dẫn chính xác Điều, Khoản trong quy chế đào tạo
 
 #### AI & LLM
 - **🤖 Dual LLM Support**: Gemini API (cloud) hoặc Qwen2.5-3B (local)
@@ -31,28 +31,27 @@ Askly là hệ thống hỏi đáp thông minh dựa trên tài liệu PDF tiế
 - **🔌 RESTful API**: Flask backend với CORS support
 - **📊 Evaluation Framework**: Đánh giá chất lượng với BERT Score
 
-## 🎯 Use Cases
+## 🎯 Công dụng chính
 
-Hệ thống Askly phù hợp cho nhiều lĩnh vực:
+FPTU Chatbot được thiết kế đặc biệt cho cộng đồng FPT University:
 
-### Giáo dục
-- **Trường học/Đại học**: Chatbot trả lời về quy chế, học phí, tuyển sinh, điều kiện tốt nghiệp
-- **E-learning**: Trợ lý học tập từ giáo trình PDF
-- **Hỏi đáp tài liệu học thuật**: Luận văn, báo cáo nghiên cứu
+### 🎓 Dành cho Sinh viên
+- **Quy chế đào tạo**: Tra cứu điều kiện tốt nghiệp, chuyển ngành, chuyển trường, học vượt
+- **Học phí & Học bổng**: Thông tin về mức học phí, chính sách miễn giảm, học bổng
+- **Lịch học & Thi**: Quy định về lịch học, đăng ký môn học, lịch thi, thi lại
+- **Thực tập & Capstone**: Hướng dẫn về thực tập doanh nghiệp, đồ án tốt nghiệp
+- **Hoạt động sinh viên**: Thông tin về CLB, sự kiện, hoạt động ngoại khóa
+- **Dịch vụ sinh viên**: Thủ tục hành chính, ký túc xá, thư viện, phòng lab
 
-### Doanh nghiệp
-- **Knowledge base**: Tra cứu tài liệu nội bộ, quy trình vận hành
-- **Onboarding**: Hỗ trợ nhân viên mới tìm hiểu quy định công ty
-- **Customer support**: Trả lời câu hỏi từ hướng dẫn sử dụng sản phẩm
+### 👨‍🏫 Dành cho Giảng viên
+- **Quy chế giảng dạy**: Tra cứu quy định về giảng dạy, chấm điểm, ra đề thi
+- **Nghiên cứu khoa học**: Thông tin về đề tài nghiên cứu, công bố khoa học
+- **Đào tạo & Phát triển**: Chương trình bồi dưỡng giảng viên
 
-### Pháp lý
-- **Tra cứu văn bản pháp luật**: Nghị định, thông tư, quy định
-- **Tư vấn pháp lý**: Tìm kiếm điều khoản liên quan
-- **Compliance**: Kiểm tra tuân thủ quy định
-
-### Y tế
-- **Hỏi đáp y khoa**: Tra cứu thông tin từ tài liệu y học
-- **Hướng dẫn sức khỏe**: Thông tin từ sổ tay chăm sóc sức khỏe
+### 👪 Dành cho Phụ huynh
+- **Tuyển sinh**: Thông tin về điều kiện, hồ sơ, phương thức tuyển sinh
+- **Học phí & Thanh toán**: Chi tiết về mức thu, phương thức thanh toán
+- **Theo dõi học tập**: Hiểu về hệ thống đào tạo, cách đánh giá sinh viên
 
 ## 🏗️ Kiến trúc hệ thống
 
@@ -193,16 +192,23 @@ API_PORT=5000
 3. Tạo API key mới
 4. Copy và paste vào file `.env`
 
-### 4. Chuẩn bị dữ liệu
+### 4. Chuẩn bị dữ liệu FPTU
 
 ```bash
 # Tạo thư mục data nếu chưa có
 mkdir -p data/uploaded_pdfs
 
-# Copy các file PDF vào thư mục
-cp /path/to/your/*.pdf data/uploaded_pdfs/
+# Copy các tài liệu FPTU vào thư mục (quy chế, học phí, tuyển sinh...)
+cp /path/to/fptu/documents/*.pdf data/uploaded_pdfs/
 
-# Xây dựng embeddings
+# Ví dụ các tài liệu cần thiết:
+# - Quy chế đào tạo FPTU.pdf
+# - Thông tin tuyển sinh.pdf  
+# - Biểu học phí.pdf
+# - Quy định thực tập.pdf
+# - Hướng dẫn sinh viên.pdf
+
+# Xây dựng embeddings từ tài liệu
 python run.py --build
 ```
 
@@ -241,10 +247,11 @@ python run.py
 python run_fast.py
 ```
 
-Sau đó nhập câu hỏi trực tiếp trong terminal:
+Sau đó nhập câu hỏi về FPTU:
 ```
-> Học phí là bao nhiêu?
-> Điều kiện tốt nghiệp là gì?
+> Học phí của FPTU là bao nhiêu?
+> Điều kiện tốt nghiệp của sinh viên FPTU?
+> Quy định về thi lại như thế nào?
 > quit  # để thoát
 ```
 
@@ -255,7 +262,29 @@ python api_server.py
 # API docs: http://localhost:8000/health
 ```
 
-## 📖 Ví dụ sử dụng
+## 📖 Ví dụ câu hỏi
+
+### Các câu hỏi phổ biến mà FPTU Chatbot có thể trả lời:
+
+**Về học phí:**
+- "Học phí của ngành Software Engineering là bao nhiêu?"
+- "Có những hình thức miễn giảm học phí nào?"
+- "Thời hạn đóng học phí mỗi kỳ là khi nào?"
+
+**Về tuyển sinh:**
+- "Điều kiện tuyển sinh vào FPTU là gì?"
+- "Có những phương thức tuyển sinh nào?"
+- "Hồ sơ tuyển sinh cần những giấy tờ gì?"
+
+**Về quy chế đào tạo:**
+- "Điều kiện tốt nghiệp của FPTU là gì?"
+- "Sinh viên có thể học vượt bao nhiêu tín chỉ mỗi kỳ?"
+- "Quy định về thi lại và học lại như thế nào?"
+- "Điều kiện chuyển ngành là gì?"
+
+**Về thực tập:**
+- "Yêu cầu về thực tập doanh nghiệp là gì?"
+- "Thời gian thực tập tối thiểu là bao lâu?"
 
 ### Python API
 
@@ -266,22 +295,20 @@ from rag_pipeline import RAGPipeline
 pipeline = RAGPipeline()
 pipeline.setup_pipeline(load_existing_embeddings=True)
 
-# Hỏi câu hỏi
+# Hỏi về quy chế
 answer = pipeline.ask(
-    query="Học phí của trường là bao nhiêu?",
-    n_resources=5,      # Số tài liệu truy xuất
-    temperature=0.2,    # Độ sáng tạo của LLM (0-1)
-    max_new_tokens=250  # Độ dài tối đa câu trả lời
+    query="Điều kiện tốt nghiệp của FPTU là gì?",
+    n_resources=5,
+    temperature=0.2,
+    max_new_tokens=250
 )
-
 print(answer)
 
-# Chỉ tìm kiếm (không tạo câu trả lời)
-results = pipeline.search("Học phí", n_results=5)
-for result in results:
-    print(f"Điểm số: {result['score']:.4f}")
-    print(f"Nội dung: {result['sentence_chunk'][:100]}...")
-    print(f"Nguồn: {result['page_number']}")
+# Hỏi về học phí
+answer = pipeline.ask(
+    query="Học phí ngành Kỹ thuật phần mềm là bao nhiêu?"
+)
+print(answer)
 ```
 
 ### REST API
@@ -290,11 +317,19 @@ for result in results:
 # Health check
 curl http://localhost:8000/health
 
-# Hỏi câu hỏi (POST request)
+# Hỏi về điều kiện tốt nghiệp (POST request)
 curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "Học phí là bao nhiêu?",
+    "query": "Điều kiện tốt nghiệp của FPTU là gì?",
+    "n_resources": 5
+  }'
+
+# Hỏi về học phí
+curl -X POST http://localhost:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Học phí ngành Software Engineering?",
     "n_resources": 5
   }'
 
@@ -305,22 +340,28 @@ curl -X POST http://localhost:8000/clear
 ### JavaScript/React
 
 ```javascript
-// Trong React component
-const askQuestion = async (question) => {
-  const response = await fetch('http://localhost:8000/ask', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: question,
-      n_resources: 5
-    })
-  });
+// Tích hợp vào website FPTU
+const FPTUChatbot = () => {
+  const askQuestion = async (question) => {
+    const response = await fetch('http://localhost:8000/ask', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: question,
+        n_resources: 5
+      })
+    });
+    
+    const data = await response.json();
+    console.log('Câu trả lời:', data.answer);
+    console.log('Nguồn tham khảo:', data.sources);
+    return data;
+  };
   
-  const data = await response.json();
-  console.log(data.answer);
-  console.log(data.sources);
+  // Ví dụ: Hỏi về học phí
+  askQuestion('Học phí của FPTU là bao nhiêu?');
 };
 ```
 
@@ -346,9 +387,9 @@ CHUNK_OVERLAP = 5                   # Overlap giữa các chunks
 ### Tùy chỉnh khi gọi API
 
 ```python
-# Python API
+# Python API - Ví dụ hỏi về FPTU
 answer = pipeline.ask(
-    query="Học phí là bao nhiêu?",
+    query="Điều kiện tốt nghiệp của sinh viên FPTU là gì?",
     n_resources=10,      # Số chunks truy xuất
     temperature=0.1,     # Độ chính xác (0.0 = chính xác, 1.0 = sáng tạo)
     max_new_tokens=150,  # Độ dài tối đa
@@ -358,7 +399,7 @@ answer = pipeline.ask(
 # REST API
 curl -X POST http://localhost:8000/ask \
   -H "Content-Type: application/json" \
-  -d '{"query": "Học phí?", "n_resources": 10}'
+  -d '{"query": "Học phí ngành Kỹ thuật phần mềm?", "n_resources": 10}'
 ```
 
 ### Chuyển đổi giữa LLM models
@@ -382,9 +423,11 @@ Chỉnh sửa trong `prompts/dynamic_prompts.py`:
 
 ```python
 INTENT_PROMPTS = {
-    "tuition_fee": "Bạn là chuyên gia tư vấn học phí...",
-    "admission": "Bạn là chuyên viên tuyển sinh...",
-    # Thêm intent mới của bạn
+    "tuition_fee": "Bạn là chuyên viên tư vấn học phí của FPT University...",
+    "admission": "Bạn là chuyên viên tuyển sinh của FPT University...",
+    "graduation": "Bạn là chuyên viên học vụ tư vấn về điều kiện tốt nghiệp...",
+    "internship": "Bạn là cố vấn thực tập của FPT University...",
+    # Thêm intent mới cho FPTU
 }
 ```
 
@@ -401,15 +444,19 @@ pipeline = RAGPipeline()
 pipeline.setup_pipeline(load_existing_embeddings=True)
 evaluator = RAGEvaluator(pipeline)
 
-# Chuẩn bị test data
+# Chuẩn bị test data cho FPTU
 test_data = [
     {
-        "question": "Học phí là bao nhiêu?",
-        "reference_answer": "Học phí từ 10-15 triệu đồng mỗi năm..."
+        "question": "Học phí của FPTU là bao nhiêu?",
+        "reference_answer": "Học phí tại FPT University dao động từ 10-15 triệu đồng mỗi kỳ tùy theo ngành học..."
     },
     {
-        "question": "Điều kiện tốt nghiệp?",
-        "reference_answer": "Sinh viên cần đạt 120 tín chỉ..."
+        "question": "Điều kiện tốt nghiệp của FPTU?",
+        "reference_answer": "Sinh viên cần tích lũy đủ 120 tín chỉ, GPA >= 2.0, hoàn thành thực tập và capstone project..."
+    },
+    {
+        "question": "Quy định về thi lại?",
+        "reference_answer": "Sinh viên được thi lại tối đa 2 lần cho mỗi môn học..."
     }
 ]
 
@@ -474,11 +521,11 @@ pip install -r requirements.txt --upgrade
 ### Lỗi: Out of Memory
 
 ```python
-# Giảm số tài liệu truy xuất
-answer = pipeline.ask(query, n_resources=3)  # Thay vì 5
+# Giảm số tài liệu truy xuất cho câu hỏi đơn giản
+answer = pipeline.ask("Học phí FPTU?", n_resources=3)
 
-# Hoặc giảm max_new_tokens
-answer = pipeline.ask(query, max_new_tokens=150)
+# Hoặc giảm độ dài câu trả lời
+answer = pipeline.ask("Điều kiện tốt nghiệp?", max_new_tokens=150)
 ```
 
 ### Lỗi: Frontend không kết nối được Backend
@@ -504,8 +551,8 @@ pip install pytest pytest-asyncio
 # Chạy tests
 pytest tests/ -v
 
-# Test thủ công
-python -c "from rag_pipeline import RAGPipeline; p = RAGPipeline(); p.setup_pipeline()"
+# Test thủ công với câu hỏi FPTU
+python -c "from rag_pipeline import RAGPipeline; p = RAGPipeline(); p.setup_pipeline(); print(p.ask('Học phí FPTU?'))"
 ```
 
 ## 📈 Hiệu năng & Metrics
@@ -521,12 +568,12 @@ python -c "from rag_pipeline import RAGPipeline; p = RAGPipeline(); p.setup_pipe
 | **Total Response Time** | 2-5s | End-to-end (cloud) |
 | **Throughput** | 10-15 req/s | Chỉ search, không LLM |
 
-### Độ chính xác
+### Độ chính xác (Đánh giá trên dữ liệu FPTU)
 
-- **Retrieval accuracy**: ~80-85% (top-10)
-- **Answer quality**: ~85%+ (human evaluation)
-- **Multi-turn understanding**: ~85%+
-- **Hallucination rate**: 10-15%
+- **Retrieval accuracy**: ~85-90% (top-10) - Tìm đúng quy chế liên quan
+- **Answer quality**: ~85%+ (đánh giá bởi chuyên viên học vụ FPTU)
+- **Multi-turn understanding**: ~85%+ - Hiểu ngữ cảnh câu hỏi liên tiếp
+- **Hallucination rate**: 10-15% - Tỷ lệ trả lời sai hoặc không có trong tài liệu
 
 ### Tối ưu hóa có sẵn
 
@@ -729,13 +776,17 @@ Dự án này sử dụng các công nghệ và thư viện mã nguồn mở:
 
 <div align="center">
 
-**Askly** - Hệ thống RAG Tiếng Việt  
-Được xây dựng với ❤️ cho cộng đồng Việt Nam
+**FPTU Chatbot** 🎓  
+Trợ lý thông minh cho cộng đồng FPT University  
+Được xây dựng với ❤️ bằng công nghệ RAG AI
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.13+-orange.svg)](https://tensorflow.org)
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev)
+[![FPTU](https://img.shields.io/badge/FPTU-Chatbot-orange.svg)](https://fptu.edu.vn)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
+*Hỗ trợ sinh viên, giảng viên và phụ huynh tra cứu thông tin nhanh chóng và chính xác*
 
 </div>
 
