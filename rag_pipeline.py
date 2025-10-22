@@ -6,8 +6,7 @@ import pandas as pd
 from typing import List, Dict, Any, Optional, Tuple
 from pathlib import Path
 
-from processors.pdf_processor import PDFProcessor
-from processors.text_processor import TextProcessor
+from processors.document_chunker import DocumentChunker
 from models.embedding_manager import EmbeddingManager
 from models.retrieval_system import RetrievalSystem
 from models.llm_manager import LLMManager
@@ -21,8 +20,13 @@ class RAGPipeline:
     """Main RAG pipeline that orchestrates all components"""
     
     def __init__(self, pdf_path: Optional[Path] = None):
-        self.pdf_processor = PDFProcessor(pdf_path)
-        self.text_processor = TextProcessor()
+        # Use DocumentChunker with semantic chunking enabled by default
+        self.document_chunker = DocumentChunker(
+            use_semantic_chunking=True,
+            semantic_max_tokens=2000,
+            min_token_length=100,
+            use_ocr=True
+        )
         self.embedding_manager = EmbeddingManager()
         self.retrieval_system = None
         self.llm_manager = LLMManager()
@@ -319,14 +323,13 @@ class RAGPipeline:
         import numpy as np
         
         try:
-            # Create temporary PDF processor for this specific PDF
-            temp_pdf_processor = PDFProcessor(pdf_path)
-            
-            # Process PDF
-            pages_and_texts = temp_pdf_processor.process_pdf()
-            
-            # Process text
-            new_text_chunks = self.text_processor.process_text(pages_and_texts)
+            # Process PDF with DocumentChunker (includes OCR and semantic chunking)
+            metadata = {'source_file': pdf_path.name, 'source_path': str(pdf_path)}
+            new_text_chunks = self.document_chunker.process_pdf_to_chunks(
+                pdf_path=str(pdf_path),
+                metadata=metadata,
+                remove_footer=True
+            )
             
             # Create embeddings for new chunks
             new_embeddings = self.embedding_manager.create_embeddings(new_text_chunks)

@@ -14,13 +14,15 @@ NC='\033[0m' # No Color
 
 # Kiểm tra embeddings
 echo -e "${YELLOW}📋 Checking embeddings...${NC}"
-if [ ! -d "data/embeddings" ] || [ -z "$(ls -A data/embeddings 2>/dev/null)" ]; then
-    echo -e "${YELLOW}⚠️  Embeddings not found. Building embeddings...${NC}"
-    python run.py --build
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}❌ Failed to build embeddings${NC}"
-        exit 1
-    fi
+if [ ! -f "outputs/text_chunks_and_embeddings_df.csv" ] && [ ! -f "outputs/text_chunks_and_embeddings_df.npy" ]; then
+    echo -e "${RED}❌ Embeddings not found!${NC}"
+    echo ""
+    echo -e "${YELLOW}Please build embeddings first:${NC}"
+    echo -e "   ${BLUE}python scripts/rebuild_clean_database.py${NC}"
+    echo ""
+    echo "This needs to be done once, or when you add new PDFs."
+    echo ""
+    exit 1
 fi
 echo -e "${GREEN}✅ Embeddings ready!${NC}"
 echo ""

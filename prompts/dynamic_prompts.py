@@ -130,20 +130,19 @@ QUY TẮC CHUNG:
             if history_parts:
                 history_text = f"\n\nLỊCH SỬ HỘI THOẠI:\n" + "\n".join(history_parts) + "\n"
         
-        # Build prompt theo format Vi-Qwen2-RAG
-        prompt = f"""Chú ý các yêu cầu sau:
-- Câu trả lời phải chính xác và đầy đủ nếu ngữ cảnh có câu trả lời. 
-- Chỉ sử dụng các thông tin có trong ngữ cảnh được cung cấp.
-- Chỉ cần từ chối trả lời và không suy luận gì thêm nếu ngữ cảnh không có câu trả lời.
+        prompt = f"""Hãy trả lời câu hỏi dựa trên thông tin trong ngữ cảnh.
 
-Hãy trả lời câu hỏi dựa trên ngữ cảnh:
-### Ngữ cảnh :
+QUAN TRỌNG:
+- Đọc KỸ toàn bộ ngữ cảnh trước khi trả lời
+- Trả lời NGẮN GỌN, CHÍNH XÁC
+- Nếu không có thông tin: "Thông tin này không có trong tài liệu."
+
+Ngữ cảnh:
 {context}
 
-### Câu hỏi :
-{query}
+Câu hỏi: {query}
 
-### Trả lời :"""
+Trả lời:"""
         
         return prompt
     

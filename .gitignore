@@ -97,3 +97,7 @@ Thumbs.db
 *.tmp
 *.bak
 *~
+
+# ---- Test results ----
+test_results_comparison.json
+*_comparison.json
