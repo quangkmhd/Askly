@@ -129,7 +129,7 @@ python scripts/rebuild_clean_database.py
 | Metric | Value |
 |--------|-------|
 | **Database** | 204 chunks, 18 PDFs |
-| **OCR** | 100% chính xác |
+| **OCR** | 97% chính xác |
 | **Search** | ~50-100ms |
 | **Model** | Qwen2.5-3B + LoRA (4-bit, 1GB VRAM) |
 
