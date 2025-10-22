@@ -94,60 +94,51 @@ QUY TẮC CHUNG:
         Returns:
             Formatted prompt string
         """
-        # Format context
+        # Format context - TOP 3 ONLY with 600 char limit (OPTIMIZED)
         context_parts = []
-        for i, item in enumerate(context_items, 1):
+        for i, item in enumerate(context_items[:3], 1):  # TOP 3 ONLY
             headers = item.get('headers', [])
             header_text = ' > '.join(headers) if headers else ''
-            source = item.get('source_file', 'N/A')
             page = item.get('page_number', 'N/A')
             
-            context_str = f"[Context {i}]"
+            # Limit context length to 600 chars to reduce noise
+            text = item['sentence_chunk'][:600]
+            
+            context_str = f"[{i}]"
             if header_text:
                 context_str += f" {header_text}"
-            context_str += f" (Nguồn: {source}, Trang {page})\n"
-            context_str += item['sentence_chunk']
+            context_str += f" (Trang {page})\n{text}"
             
             context_parts.append(context_str)
         
         context = "\n\n".join(context_parts)
         
-        # Get intent-specific instructions
-        instructions = self.intent_instructions.get(intent, self.intent_instructions['general'])
+        # Get intent-specific rules (SHORT VERSION - 70% shorter)
+        if intent == 'tuition_fee':
+            special_rules = "\nQUY TẮC: Trích dẫn CHÍNH XÁC số tiền. KHÔNG làm tròn."
+        elif intent == 'admission':
+            special_rules = "\nQUY TẮC: Nêu rõ điều kiện xét tuyển."
+        elif intent == 'grades':
+            special_rules = "\nQUY TẮC: Phân biệt GPA và điểm xếp loại."
+        else:
+            special_rules = ""
         
-        # Get few-shot examples
-        examples = self._format_few_shot_examples(intent)
+        # Get short few-shot examples (1-2 only)
+        examples = self._get_short_examples(intent)
         
-        # Format chat history
-        history_text = ""
-        if chat_history and len(chat_history) > 0:
-            history_parts = []
-            for msg in chat_history[-6:]:
-                if msg.get('role') == 'user':
-                    history_parts.append(f"Người dùng: {msg.get('content', '')}")
-                elif msg.get('role') == 'assistant':
-                    history_parts.append(f"Trợ lý: {msg.get('content', '')}")
-            if history_parts:
-                history_text = f"\n\nLỊCH SỬ HỘI THOẠI:\n" + "\n".join(history_parts) + "\n"
-        
-        prompt = f"""Hãy trả lời câu hỏi dựa trên thông tin trong ngữ cảnh.
+        # SHORT PROMPT (70% shorter than original ~200 words)
+        prompt = f"""Trả lời dựa vào tài liệu.{special_rules}
 
-QUAN TRỌNG:
-- Đọc KỸ toàn bộ ngữ cảnh trước khi trả lời
-- Trả lời NGẮN GỌN, CHÍNH XÁC
-- Nếu không có thông tin: "Thông tin này không có trong tài liệu."
-
-Ngữ cảnh:
+{examples}TÀI LIỆU:
 {context}
 
-Câu hỏi: {query}
-
-Trả lời:"""
+HỎI: {query}
+ĐÁP:"""
         
         return prompt
     
     def _format_few_shot_examples(self, intent: str) -> str:
-        """Format few-shot examples for intent"""
+        """Format few-shot examples for intent (DEPRECATED - use _get_short_examples)"""
         examples = self.few_shot_examples.get(intent, [])
         
         if not examples:
@@ -163,6 +154,31 @@ Trả lời:"""
         formatted += "\nBÂY GIỜ HÃY TRẢ LỜI CÂU HỎI SAU:\n"
         
         return formatted
+    
+    def _get_short_examples(self, intent: str) -> str:
+        """Get 1-2 concise examples for better focus"""
+        if intent == 'tuition_fee':
+            return """VÍ DỤ:
+Tài liệu: "Học phí năm 1: 31.600.000đ/kỳ"
+Hỏi: Học phí là bao nhiêu?
+Đáp: Học phí năm 1 là 31.600.000đ/kỳ.
+
+"""
+        elif intent == 'admission':
+            return """VÍ DỤ:
+Tài liệu: "Yêu cầu: Top50 School Rank (21 điểm)"
+Hỏi: Điều kiện tuyển sinh?
+Đáp: Yêu cầu Top50 School Rank, tương đương 21 điểm.
+
+"""
+        elif intent == 'grades':
+            return """VÍ DỤ:
+Tài liệu: "GPA >= 3.0 để xếp loại Khá"
+Hỏi: GPA bao nhiêu để xếp loại Khá?
+Đáp: GPA >= 3.0.
+
+"""
+        return ""
 
 
 if __name__ == "__main__":

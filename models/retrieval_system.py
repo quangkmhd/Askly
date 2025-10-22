@@ -152,40 +152,55 @@ class RetrievalSystem:
         return context_items
     
     def _keyword_search(self, query: str, n_resources: int) -> List[Dict[str, Any]]:
-        """Keyword-based search for specific topics (học phí, điểm, etc.)"""
+        """Keyword-based search - STRICT matching for better accuracy"""
         query_lower = query.lower()
         
-        # Define keyword patterns for specific topics
+        # Define keyword patterns - STRICT and PRECISE
         keyword_patterns = {
-            "học phí": ["c. học phí", "học phí", "chi phí đào tạo", "31.600.000", "33.600.000", "35.800.000"],
-            "điểm": ["điểm số", "gpa", "điểm trung bình", "xếp loại"],
-            "tuyển sinh": ["tuyển sinh", "nhập học", "đăng ký", "xét tuyển"],
-            "thời gian": ["thời gian", "lịch trình", "học kỳ", "kỳ học"],
+            "học phí": ["học phí", "31.600.000", "33.600.000", "35.800.000", "chi phí đào tạo"],
+            "điểm": ["điểm số", "gpa", "xếp loại"],
+            "tuyển sinh": ["tuyển sinh", "xét tuyển", "top50", "school rank"],
         }
         
-        # Check if query matches any pattern
+        # Find matched topic
         matched_keywords = []
+        matched_topic = None
         for topic, keywords in keyword_patterns.items():
             if topic in query_lower:
-                matched_keywords.extend(keywords)
+                matched_keywords = keywords
+                matched_topic = topic
+                break
         
         if not matched_keywords:
             return []
         
-        # Search chunks by keywords
+        # Search chunks - STRICT MATCHING
         results = []
         for idx, chunk in enumerate(self.text_chunks):
             text_lower = chunk.get('sentence_chunk', '').lower()
-            # Check if chunk contains any of the keywords
-            match_count = sum(1 for kw in matched_keywords if kw in text_lower)
-            if match_count > 0:
+            
+            # Count exact matches
+            match_count = 0
+            for kw in matched_keywords:
+                if kw in text_lower:
+                    match_count += 1
+            
+            # STRICT: Require at least 2 keyword matches for tuition_fee
+            min_matches = 2 if matched_topic == "học phí" else 1
+            
+            if match_count >= min_matches:
                 item = chunk.copy()
-                item['score'] = 0.9 + (match_count * 0.01)  # High score for keyword matches
+                item['score'] = 0.95 + (match_count * 0.01)
                 results.append((item, match_count))
         
-        # Sort by match count and take top n
+        # Sort by match count
         results.sort(key=lambda x: x[1], reverse=True)
-        return [item for item, _ in results[:n_resources]]
+        
+        # Only return if we have good quality matches
+        if results and results[0][1] >= min_matches:
+            return [item for item, _ in results[:n_resources]]
+        
+        return []
     
     def _expand_query(self, query: str) -> str:
         """Expand query with related terms for better search - expands ALL matching keywords"""

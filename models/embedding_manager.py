@@ -7,6 +7,7 @@ import time
 import pandas as pd
 import numpy as np
 import tensorflow as tf
+import tensorflow_text  # REQUIRED for multilingual model (registers SentencepieceOp)
 from typing import List, Dict, Any, Optional, Tuple
 from tqdm.auto import tqdm
 import tensorflow_hub as hub
@@ -29,7 +30,7 @@ os.environ["TFHUB_CACHE_DIR"] = str(TFHUB_CACHE_DIR)
 #   "https://tfhub.dev/google/universal-sentence-encoder-multilingual/3"
 TF_HUB_URL = os.getenv(
     "EMBEDDING_TF_HUB_URL",
-    "https://tfhub.dev/google/universal-sentence-encoder/4"
+    "https://tfhub.dev/google/universal-sentence-encoder-multilingual/3"
 )
 
 def _pick_device() -> str:

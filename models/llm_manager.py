@@ -229,62 +229,9 @@ class LLMManager:
 
         return self.generate_text(prompt=prompt, temperature=temperature, max_new_tokens=max_new_tokens)
 
-    def format_rag_prompt(self, query: str, context_items: List[Dict[str, Any]], chat_history: List[Dict[str, str]] = None) -> str:
-        """Universal RAG prompt for all models and languages"""
-        # Format context
-        context_parts = []
-        for i, item in enumerate(context_items, 1):
-            context_parts.append(f"Context {i} (Page {item.get('page_number', 'N/A')}):\n{item['sentence_chunk']}")
-        context = "\n\n".join(context_parts)
-        
-        # Format chat history if provided
-        history_text = ""
-        if chat_history and len(chat_history) > 0:
-            history_parts = []
-            for msg in chat_history[-6:]:  # Only keep last 6 messages
-                if msg.get('role') == 'user':
-                    history_parts.append(f"Người dùng: {msg.get('content', '')}")
-                elif msg.get('role') == 'assistant':
-                    history_parts.append(f"Trợ lý: {msg.get('content', '')}")
-            if history_parts:
-                history_text = f"\n\nLỊCH SỬ CUỘC TRÒ CHUYỆN:\n" + "\n".join(history_parts) + "\n"
-        
-        # Strict prompt: prevent hallucination, use only document info
-        base_prompt = f"""Bạn là trợ lý AI của trường Đại học FPT. Trả lời câu hỏi DỰA HOÀN TOÀN vào tài liệu.
-
-QUY TẮC BẮT BUỘC:
-1. CHỈ trích dẫn CHÍNH XÁC thông tin có trong tài liệu
-2. TUYỆT ĐỐI KHÔNG bịa số liệu, ngày tháng, link, hoặc thông tin không có
-3. Nếu không tìm thấy thông tin: "Tài liệu không đề cập đến thông tin này"
-4. Trả lời NGẮN (2-3 câu), CHÍNH XÁC, KHÔNG giải thích dài dòng
-
-TÀI LIỆU:
-{context}{history_text}
-
-CÂU HỎI: {query}
-
-TRẢ LỜI (ngắn gọn, chính xác):"""
-        
-        return base_prompt
-
-    def generate_rag_response(
-        self,
-        query: str,
-        context_items: List[Dict[str, Any]],
-        temperature: float = DEFAULT_TEMPERATURE,
-        max_new_tokens: int = DEFAULT_MAX_NEW_TOKENS,
-        format_answer: bool = True,
-        stream: bool = False,
-        chat_history: List[Dict[str, str]] = None,
-    ) -> str:
-        prompt = self.format_rag_prompt(query, context_items, chat_history)
-        output_text = self.generate_text(prompt=prompt, temperature=temperature, max_new_tokens=max_new_tokens, stream=stream)
-
-        if format_answer:
-            # Remove prompt from output (special tokens already removed by tokenizer)
-            answer = output_text.replace(prompt, "").strip()
-            return answer
-        return output_text
+    # REMOVED: format_rag_prompt() and generate_rag_response()
+    # Reason: Pipeline uses DynamicPromptGenerator.generate_rag_prompt() instead
+    # All prompt generation is now centralized in prompts/dynamic_prompts.py
 
     def get_model_info(self) -> Dict[str, Any]:
         if self.model is None:
