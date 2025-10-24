@@ -10,7 +10,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 import io
 from tqdm import tqdm
 
-sys.path.insert(0, str(Path(__file__).parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))  # Go up to askly/ directory
 
 from processors.document_chunker import DocumentChunker
 from models.embedding_manager import EmbeddingManager

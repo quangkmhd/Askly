@@ -118,6 +118,8 @@ class SemanticChunker:
                         ]
                         current_headers.append(h)
                         break
+                # Skip adding header to chunk - it will be prepended later
+                continue
             
             # Check if adding this paragraph exceeds max_tokens
             header_text = '\n'.join([h['text'] for h in current_headers])
@@ -186,8 +188,18 @@ class SemanticChunker:
             if not page_text.strip():
                 continue
             
+            # Get metadata from page_info (priority) or function param
+            page_metadata = page_info.get('metadata', {}) or {}
+            combined_metadata = {**page_metadata}  # Start with page metadata
+            if metadata:  # Override with function param if provided
+                combined_metadata.update(metadata)
+            
+            # Also get source_file from page_info root if exists
+            if 'source_file' in page_info and 'source_file' not in combined_metadata:
+                combined_metadata['source_file'] = page_info['source_file']
+            
             # Chunk this page
-            page_chunks = self.chunk_with_headers(page_text, metadata)
+            page_chunks = self.chunk_with_headers(page_text, combined_metadata)
             
             # Add page number and chunk ID
             for chunk in page_chunks:
@@ -198,10 +210,11 @@ class SemanticChunker:
                 chunk['chunk_word_count'] = len(chunk['text'].split())
                 chunk['chunk_token_count'] = chunk['tokens']
                 
-                # Flatten metadata
-                if metadata:
-                    for key, value in metadata.items():
-                        chunk[key] = value
+                # Flatten metadata to chunk root level for easier access
+                if combined_metadata:
+                    for key, value in combined_metadata.items():
+                        if key not in chunk:  # Don't override existing keys
+                            chunk[key] = value
                 
                 all_chunks.append(chunk)
                 chunk_id += 1

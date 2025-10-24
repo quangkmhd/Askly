@@ -41,8 +41,6 @@ class RAGPipeline:
     def setup_pipeline(self, load_existing_embeddings: bool = True) -> bool:
         """Setup the complete RAG pipeline with incremental PDF processing"""
         try:
-            print("[INFO] Setting up RAG pipeline...")
-            
             # Always try to load existing embeddings first
             if load_existing_embeddings and EMBEDDINGS_CSV_PATH.exists():
                 print("[INFO] Loading existing embeddings...")
@@ -65,11 +63,9 @@ class RAGPipeline:
                 print("[WARNING] No embeddings or PDFs found to process")
                 return False
             else:
-                print("[INFO] All PDFs already processed, using existing embeddings")
-                self.embeddings = self.embedding_manager.create_embeddings(self.text_chunks)
-                
-                # Save embeddings
-                self.embedding_manager.save_embeddings()
+                # Embeddings already loaded from file, just use them
+                # self.embeddings already set by load_embeddings() on line 46-49
+                pass  # No need to create or save again
             
             # Initialize retrieval system
             # Pass the EmbeddingManager instance (has .encode) rather than the raw TF-Hub module
@@ -87,7 +83,9 @@ class RAGPipeline:
             return True
             
         except Exception as e:
+            import traceback
             print(f"[ERROR] Failed to setup pipeline: {e}")
+            print(f"[DEBUG] Traceback: {traceback.format_exc()}")
             return False
     
     def ask(self, query: str, temperature: float = DEFAULT_TEMPERATURE,
@@ -262,9 +260,10 @@ class RAGPipeline:
         """Get list of PDFs that haven't been processed yet"""
         from pathlib import Path
         import json
+        from config.config import DATA_DIR
         
         # Find all PDFs in uploaded_pdfs directory
-        uploaded_pdfs_dir = Path("data/uploaded_pdfs")
+        uploaded_pdfs_dir = DATA_DIR / "uploaded_pdfs"
         if not uploaded_pdfs_dir.exists():
             return []
         
@@ -273,7 +272,7 @@ class RAGPipeline:
             return []
         
         # Load processed PDFs tracking file
-        processed_pdfs_file = Path("data/processed_pdfs.json")
+        processed_pdfs_file = DATA_DIR / "processed_pdfs.json"
         processed_pdfs = set()
         
         if processed_pdfs_file.exists():
@@ -281,7 +280,8 @@ class RAGPipeline:
                 with open(processed_pdfs_file, 'r', encoding='utf-8') as f:
                     processed_data = json.load(f)
                     processed_pdfs = set(processed_data.get('processed_files', []))
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"[WARN] Failed to load processed PDFs file: {e}")
                 processed_pdfs = set()
         
         # Find unprocessed PDFs
@@ -296,8 +296,9 @@ class RAGPipeline:
     def _mark_pdf_as_processed(self, pdf_path: Path):
         """Mark a PDF as processed"""
         import json
+        from config.config import DATA_DIR
         
-        processed_pdfs_file = Path("data/processed_pdfs.json")
+        processed_pdfs_file = DATA_DIR / "processed_pdfs.json"
         processed_data = {'processed_files': []}
         
         # Load existing data
@@ -305,7 +306,8 @@ class RAGPipeline:
             try:
                 with open(processed_pdfs_file, 'r', encoding='utf-8') as f:
                     processed_data = json.load(f)
-            except (json.JSONDecodeError, KeyError):
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"[WARN] Failed to load processed PDFs for update: {e}")
                 processed_data = {'processed_files': []}
         
         # Add new PDF

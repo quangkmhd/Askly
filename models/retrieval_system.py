@@ -114,8 +114,8 @@ class RetrievalSystem:
         
         # If scores are too low, try expanded search with related terms
         # DISABLED: Query expansion causes irrelevant results (e.g., English HR docs for Vietnamese queries)
-        # Only expand if similarity is VERY low (< 0.25)
-        if len(scores) > 0 and scores[0] < 0.25:
+        # Only expand if similarity is EXTREMELY low (< 0.2) - lowered from 0.25 to be more conservative
+        if len(scores) > 0 and scores[0] < 0.2:
             expanded_query = self._expand_query(query)
             if expanded_query != query:
                 print(f"[INFO] Very low similarity ({scores[0]:.3f}), expanding query...")
@@ -155,11 +155,27 @@ class RetrievalSystem:
         """Keyword-based search - STRICT matching for better accuracy"""
         query_lower = query.lower()
         
-        # Define keyword patterns - STRICT and PRECISE
+        # Define keyword patterns - STRICT and PRECISE (16 intents)
         keyword_patterns = {
-            "học phí": ["học phí", "31.600.000", "33.600.000", "35.800.000", "chi phí đào tạo"],
-            "điểm": ["điểm số", "gpa", "xếp loại"],
-            "tuyển sinh": ["tuyển sinh", "xét tuyển", "top50", "school rank"],
+            # Original 6 intents
+            "học phí": ["học phí", "31.600.000", "33.600.000", "35.800.000", "chi phí đào tạo", "tiền học"],
+            "điểm": ["điểm số", "gpa", "xếp loại", "điểm tối thiểu", "học lực"],
+            "tuyển sinh": ["tuyển sinh", "xét tuyển", "top50", "school rank", "nhập học", "điều kiện"],
+            "lịch": ["lịch học", "thời gian học", "học kỳ", "thời khóa biểu", "kỳ học"],
+            "tốt nghiệp": ["tốt nghiệp", "điều kiện tốt nghiệp", "bằng cấp", "văn bằng"],
+            "ngành": ["ngành học", "chuyên ngành", "chương trình", "khóa học"],
+            
+            # New 10 intents
+            "nghiên cứu": ["nghiên cứu", "nckh", "đề tài", "khoa học", "hội nghị", "công bố"],
+            "nội quy thi": ["nội quy", "thi cử", "ký thi", "phòng thi", "gian lận", "kiểm tra"],
+            "ký túc xá": ["ký túc xá", "ktx", "chỗ ở", "nội trú", "hòa lạc", "phòng ở"],
+            "thực tập": ["ojt", "thực tập", "đồ án", "capstone", "dự án tốt nghiệp"],
+            "thủ tục": ["thủ tục", "hồ sơ", "giấy tờ", "giấy xác nhận", "đăng ký"],
+            "quy tắc": ["quy tắc", "ứng xử", "đạo đức", "hành vi", "kỷ luật"],
+            "khen thưởng": ["khen thưởng", "học bổng", "giải thưởng", "sinh viên giỏi"],
+            "thạc sĩ": ["thạc sĩ", "sau đại học", "cao học", "master", "luận văn"],
+            "liên hệ": ["liên hệ", "số điện thoại", "email", "địa chỉ", "hotline"],
+            "công nghệ": ["công nghệ", "hệ thống", "wifi", "phòng lab", "phần mềm"],
         }
         
         # Find matched topic

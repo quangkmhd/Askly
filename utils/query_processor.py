@@ -9,32 +9,96 @@ class QueryProcessor:
     """Process user queries: generate standalone questions, classify intent"""
     
     def __init__(self):
-        # Intent patterns (rule-based)
+        # Intent patterns (rule-based) - Updated with 16 intents total
         self.intent_patterns = {
+            # === ORIGINAL 6 INTENTS ===
             'tuition_fee': [
-                'học phí', 'chi phí', 'tiền học', 'lệ phí', 'học phí',
+                'học phí', 'chi phí', 'tiền học', 'lệ phí',
                 'bao nhiêu tiền', 'giá', 'cost', 'tuition'
             ],
             'admission': [
-                'tuyển sinh', 'nhập học', 'đăng ký', 'xét tuyển',
-                'điều kiện', 'yêu cầu tuyển', 'admission', 'enroll'
+                'tuyển sinh', 'nhập học', 'đăng ký học', 'xét tuyển',
+                'điều kiện nhập', 'yêu cầu tuyển', 'admission', 'enroll'
             ],
             'grades': [
                 'điểm', 'gpa', 'điểm số', 'xếp loại', 'học lực',
-                'đánh giá', 'grade', 'score'
+                'đánh giá', 'grade', 'score', 'transcript'
             ],
             'schedule': [
-                'lịch', 'thời gian', 'học kỳ', 'kỳ học', 'lịch trình',
-                'thời khóa biểu', 'schedule', 'timetable'
+                'lịch', 'thời gian học', 'học kỳ', 'kỳ học', 'lịch trình',
+                'thời khóa biểu', 'schedule', 'timetable', 'calendar'
             ],
             'graduation': [
                 'tốt nghiệp', 'điều kiện tốt nghiệp', 'bằng cấp',
-                'văn bằng', 'graduation', 'degree'
+                'văn bằng', 'graduation', 'degree', 'graduate'
             ],
             'program': [
-                'ngành', 'chuyên ngành', 'chương trình', 'khóa học',
-                'program', 'major', 'curriculum'
+                'ngành', 'chuyên ngành', 'chương trình đào tạo', 'khóa học',
+                'program', 'major', 'curriculum', 'course'
             ],
+            
+            # === NEW 10 INTENTS (Phase 1: HIGH PRIORITY) ===
+            'research': [
+                'nghiên cứu', 'nckh', 'đề tài', 'khoa học',
+                'hội nghị', 'hội thảo', 'công bố', 'tạp chí',
+                'sở hữu trí tuệ', 'bằng sáng chế', 'giải thưởng khoa học',
+                'quản lý đề tài', 'thành tích nghiên cứu',
+                'research', 'publication', 'conference', 'paper',
+                'intellectual property', 'patent'
+            ],
+            'exam_rules': [
+                'nội quy thi', 'ký thi', 'quy định thi', 'phòng thi',
+                'gian lận', 'vi phạm thi', 'giám thị', 'bài thi', 'đề thi',
+                'exam rules', 'examination', 'test rules', 'cheating'
+            ],
+            'dormitory': [
+                'ký túc xá', 'ktx', 'chỗ ở', 'nội trú', 'phòng ở',
+                'đăng ký ktx', 'hòa lạc', 'nội quy ktx', 'tiện nghi ktx',
+                'dormitory', 'dorm', 'accommodation', 'housing', 'residence'
+            ],
+            'internship': [
+                'ojt', 'thực tập', 'đồ án', 'capstone', 'on-the-job',
+                'dự án tốt nghiệp', 'mentor', 'công ty thực tập',
+                'báo cáo thực tập', 'internship', 'capstone project',
+                'final project', 'industrial training'
+            ],
+            'procedures': [
+                'thủ tục', 'hồ sơ', 'giấy tờ', 'hành chính', 'văn phòng',
+                'đăng ký', 'xin', 'nộp', 'làm', 'cấp',
+                'giấy xác nhận', 'bảng điểm', 'giấy chứng nhận',
+                'procedure', 'document', 'paperwork', 'application', 'form'
+            ],
+            
+            # === NEW INTENTS (Phase 2: MEDIUM PRIORITY) ===
+            'conduct_rules': [
+                'quy tắc ứng xử', 'đạo đức', 'hành vi', 'chuẩn mực',
+                'vi phạm', 'kỷ luật', 'xử lý kỷ luật', 'văn hóa',
+                'conduct', 'behavior', 'ethics', 'violation', 'discipline'
+            ],
+            'awards': [
+                'khen thưởng', 'học bổng', 'giải thưởng', 'phần thưởng',
+                'sinh viên xuất sắc', 'sinh viên giỏi', 'thành tích',
+                'danh hiệu', 'chứng chỉ khen thưởng',
+                'award', 'scholarship', 'prize', 'honor', 'recognition'
+            ],
+            'graduate_program': [
+                'thạc sĩ', 'sau đại học', 'cao học', 'luận văn',
+                'chương trình thạc sĩ', 'đào tạo thạc sĩ',
+                'master', 'graduate', 'postgraduate', 'mba', 'thesis'
+            ],
+            
+            # === NEW INTENTS (Phase 3: LOW PRIORITY) ===
+            'contact': [
+                'liên hệ', 'email', 'số điện thoại', 'địa chỉ', 'hotline',
+                'phòng ban', 'văn phòng', 'tư vấn', 'hỏi đáp', 'hỗ trợ',
+                'contact', 'phone', 'address', 'support', 'help desk'
+            ],
+            'technology': [
+                'công nghệ', 'hệ thống', 'cơ sở vật chất', 'phòng lab',
+                'máy tính', 'wifi', 'mạng', 'phần mềm', 'tài khoản',
+                'technology', 'system', 'infrastructure', 'lab', 'software'
+            ],
+            
             'general': []  # Default fallback
         }
     
@@ -112,8 +176,8 @@ class QueryProcessor:
         # Check for indicators
         has_indicator = any(ind in query_lower for ind in context_indicators)
         
-        # Check if query is very short (< 5 words)
-        is_short = len(query.split()) < 5
+        # Check if query is very short (< 3 words) - lowered from 5 to reduce false positives
+        is_short = len(query.split()) < 3
         
         return has_indicator or is_short
     
@@ -147,13 +211,20 @@ class QueryProcessor:
         """Extract main topic from text"""
         text_lower = text.lower()
         
-        # Topic keywords
+        # Topic keywords - Extended with new intents
         topics = {
             'học phí': ['học phí', 'chi phí', 'tiền học'],
             'tuyển sinh': ['tuyển sinh', 'nhập học', 'đăng ký'],
             'điểm': ['điểm', 'gpa', 'điểm số'],
             'ngành học': ['ngành', 'chuyên ngành', 'chương trình'],
             'thời gian': ['thời gian', 'lịch', 'học kỳ'],
+            'nghiên cứu': ['nghiên cứu', 'nckh', 'đề tài', 'khoa học'],
+            'thi cử': ['thi', 'kiểm tra', 'nội quy thi'],
+            'ký túc xá': ['ký túc xá', 'ktx', 'chỗ ở'],
+            'thực tập': ['ojt', 'thực tập', 'đồ án'],
+            'khen thưởng': ['khen thưởng', 'học bổng', 'giải thưởng'],
+            'thủ tục': ['thủ tục', 'hồ sơ', 'giấy tờ'],
+            'thạc sĩ': ['thạc sĩ', 'sau đại học', 'cao học'],
         }
         
         for topic, keywords in topics.items():

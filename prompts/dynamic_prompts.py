@@ -113,27 +113,57 @@ QUY TẮC CHUNG:
         
         context = "\n\n".join(context_parts)
         
-        # Get intent-specific rules (SHORT VERSION - 70% shorter)
-        if intent == 'tuition_fee':
-            special_rules = "\nQUY TẮC: Trích dẫn CHÍNH XÁC số tiền. KHÔNG làm tròn."
-        elif intent == 'admission':
-            special_rules = "\nQUY TẮC: Nêu rõ điều kiện xét tuyển."
-        elif intent == 'grades':
-            special_rules = "\nQUY TẮC: Phân biệt GPA và điểm xếp loại."
-        else:
-            special_rules = ""
+        # Get intent-specific rules with natural language instructions (16 intents)
+        intent_rules = {
+            'tuition_fee': "\nLƯU Ý: Trích dẫn chính xác số tiền, không làm tròn. Nêu rõ học kỳ, năm học.",
+            'admission': "\nLƯU Ý: Nêu rõ điều kiện xét tuyển, phương thức, thời hạn. Có cấu trúc rõ ràng.",
+            'grades': "\nLƯU Ý: Phân biệt GPA, điểm xếp loại, điểm tối thiểu. Giải thích đơn giản.",
+            'schedule': "\nLƯU Ý: Nêu rõ thời gian, học kỳ, tuần, tháng. Chính xác về ngày tháng.",
+            'graduation': "\nLƯU Ý: Liệt kê đầy đủ điều kiện tốt nghiệp, thủ tục. Giải thích từng bước.",
+            'program': "\nLƯU Ý: Mô tả chương trình, môn học, thời lượng. Phân biệt các ngành rõ ràng.",
+            'research': "\nLƯU Ý: Nêu rõ quy trình đăng ký, yêu cầu, thời hạn. Giải thích các bước cụ thể.",
+            'exam_rules': "\nLƯU Ý: Liệt kê nội quy chi tiết, xử lý vi phạm. Nhấn mạnh những điều cấm.",
+            'dormitory': "\nLƯU Ý: Mô tả điều kiện, tiện nghi, giá cả. Hướng dẫn cách đăng ký.",
+            'internship': "\nLƯU Ý: Giải thích rõ OJT, capstone, thời điểm, yêu cầu. Hướng dẫn chuẩn bị.",
+            'procedures': "\nLƯU Ý: Nêu từng bước thủ tục, giấy tờ cần thiết, nơi nộp. Rất cụ thể.",
+            'conduct_rules': "\nLƯU Ý: Giải thích quy tắc, hành vi được/không được phép, hậu quả vi phạm.",
+            'awards': "\nLƯU Ý: Nêu rõ điều kiện, mức thưởng, thời điểm xét. Khuyến khích sinh viên.",
+            'graduate_program': "\nLƯU Ý: Mô tả chương trình, thời lượng, yêu cầu đầu vào, học phí.",
+            'contact': "\nLƯU Ý: Cung cấp đầy đủ SĐT, email, địa chỉ, giờ làm việc. Format rõ ràng.",
+            'technology': "\nLƯU Ý: Mô tả hệ thống, cách sử dụng, troubleshooting cơ bản.",
+            
+            # Fallback
+            'general': "\nLƯU Ý: Trả lời ngắn gọn, dễ hiểu, thân thiện."
+        }
+        
+        special_rules = intent_rules.get(intent, intent_rules['general'])
         
         # Get short few-shot examples (1-2 only)
         examples = self._get_short_examples(intent)
         
-        # SHORT PROMPT (70% shorter than original ~200 words)
-        prompt = f"""Trả lời dựa vào tài liệu.{special_rules}
+        # Add chat history context if available
+        history_context = ""
+        if chat_history and len(chat_history) > 0:
+            # Get last user question for context
+            last_messages = chat_history[-2:] if len(chat_history) >= 2 else chat_history
+            for msg in last_messages:
+                if msg['role'] == 'user':
+                    history_context = f"\n(Câu hỏi trước: {msg['content']})"
+                    break
+        
+        # IMPROVED PROMPT: Natural, conversational responses
+        prompt = f"""Bạn là trợ lý tư vấn của trường Đại học FPT. Trả lời câu hỏi dựa vào tài liệu dưới đây.
+
+YÊU CẦU:
+- Trả lời bằng câu văn tự nhiên, liền mạch (KHÔNG dùng bullet points)
+- Ngắn gọn, dễ hiểu, thân thiện
+- Trích dẫn chính xác thông tin từ tài liệu{special_rules}{history_context}
 
 {examples}TÀI LIỆU:
 {context}
 
-HỎI: {query}
-ĐÁP:"""
+CÂU HỎI: {query}
+TRẢ LỜI:"""
         
         return prompt
     

@@ -6,6 +6,7 @@ import torch
 import numpy as np
 from typing import List, Dict, Any, Tuple
 from time import perf_counter as timer
+from config.config import GPU_MEMORY_THRESHOLDS
 
 
 def print_wrapped(text: str, wrap_length: int = 80) -> None:
@@ -75,11 +76,16 @@ def recommend_model_config(gpu_memory_gb: int) -> Tuple[str, bool]:
     Recommend model configuration based on GPU memory
     Returns (model_id, use_quantization)
     """
-    if gpu_memory_gb < 5.1:
+    # Use thresholds from config
+    low_threshold = GPU_MEMORY_THRESHOLDS["low"]
+    medium_threshold = GPU_MEMORY_THRESHOLDS["medium"]
+    high_threshold = GPU_MEMORY_THRESHOLDS["high"]
+    
+    if gpu_memory_gb < low_threshold:
         return "google/gemma-2b-it", True
-    elif gpu_memory_gb < 8.1:
+    elif gpu_memory_gb < medium_threshold:
         return "google/gemma-2b-it", True
-    elif gpu_memory_gb < 19.0:
+    elif gpu_memory_gb < high_threshold:
         return "google/gemma-2b-it", False
     else:
         return "google/gemma-7b-it", False

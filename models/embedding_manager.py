@@ -193,8 +193,6 @@ class EmbeddingManager:
             print(f"[WARN] Fast embeddings not found, falling back to CSV...")
             return self.load_embeddings()
         
-        print(f"[INFO] ⚡ Loading embeddings from {emb_file} (numpy binary - FAST!)")
-        
         # Load embeddings (FAST!)
         emb_np = np.load(emb_file)
         
@@ -206,7 +204,7 @@ class EmbeddingManager:
         for chunk in text_chunks:
             if 'metadata' in chunk and isinstance(chunk['metadata'], dict):
                 for key, value in chunk['metadata'].items():
-                    if key not in chunk:  # Don't overwrite existing keys
+                    if key not in chunk: 
                         chunk[key] = value
         
         print(f"[INFO] Loaded {len(text_chunks)} chunks and embeddings")
@@ -229,7 +227,6 @@ class EmbeddingManager:
         # Try fast loading first
         base_path = file_path.replace('.csv', '')
         if Path(f"{base_path}.npy").exists():
-            print(f"[INFO] Fast embeddings found, using numpy binary...")
             return self.load_embeddings_fast(base_path)
 
         print(f"[INFO] Loading embeddings from {file_path} (CSV - SLOW)")

@@ -29,6 +29,10 @@ class LLMManager:
         self.tokenizer = None
         self.use_quantization = USE_QUANTIZATION
         self.use_remote = USE_REMOTE
+        
+        # Initialize attributes used by get_model_info()
+        self.model_id = None  # Will be set after loading model
+        self.attn_implementation = "eager"  # Default attention implementation
 
     # ---------------- Local (HF) helpers ----------------
 
@@ -83,6 +87,10 @@ class LLMManager:
         
         # Load model
         self.model = AutoModelForCausalLM.from_pretrained(**model_kwargs)
+        
+        # Set model_id and attention implementation after loading
+        self.model_id = str(model_path)
+        self.attn_implementation = getattr(self.model.config, '_attn_implementation', 'eager')
         
         print(f"[INFO] ✅ Model loaded on {self.device}")
         self._print_model_info()
