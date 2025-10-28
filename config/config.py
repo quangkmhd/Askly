@@ -2,6 +2,7 @@
 Configuration settings for the RAG pipeline
 """
 import os
+from pickle import TRUE
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -53,10 +54,10 @@ REMOTE_MODEL_NAME = _get("MODEL")      # Remote model name (e.g., gemini-1.5-fla
 # LLM Settings (used by models/llm_manager.py)
 # WARNING: USE_REMOTE=False requires local model at LLM_MODEL_PATH
 # If you don't have a local model, set USE_REMOTE=True to use Gemini API
-USE_REMOTE = False  # True = Gemini API, False = Local model
+USE_REMOTE = TRUE  # True = Gemini API, False = Local model
 LLM_MODEL_PATH = MODELS_DIR / "model"  # Path to local model (e.g., Qwen, Vi-Qwen2-RAG)
 LLM_DEVICE = "cuda" if (TORCH_AVAILABLE and torch.cuda.is_available()) else "cpu"
-USE_QUANTIZATION = False  # Enable 4-bit quantization to save VRAM
+USE_QUANTIZATION = True  # Enable 4-bit quantization to save VRAM
 
 # Generation settings (used by rag_pipeline.py and llm_manager.py)
 DEFAULT_TEMPERATURE = 0.1  # VERY LOW: prevent hallucination, stick to facts

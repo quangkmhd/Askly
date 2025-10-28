@@ -100,29 +100,24 @@ class RAGPipeline:
         if not self.is_initialized:
             raise RuntimeError("Pipeline not initialized. Call setup_pipeline() first.")
         
-        # Step 1: Classify intent
-        intent = self.query_processor.classify_intent(query)
-        print(f"[INFO] Detected intent: {intent}")
-        
-        # Step 2: Generate standalone question from chat history
+        # Step 1: Generate standalone question from chat history
         standalone_query = self.query_processor.generate_standalone_question(
             query, chat_history
         )
         if standalone_query != query:
             print(f"[INFO] Standalone question: {standalone_query}")
         
-        # Step 3: Retrieve relevant context (using standalone question)
+        # Step 2: Retrieve relevant context (using standalone question)
         context_items = self.retrieval_system.get_context_items(standalone_query, n_resources)
         
-        # Step 4: Generate dynamic prompt based on intent
+        # Step 3: Generate dynamic prompt
         prompt = self.prompt_generator.generate_rag_prompt(
             query=query,  # Use original query for answer
             context_items=context_items,
-            intent=intent,
             chat_history=chat_history
         )
         
-        # Step 5: Generate response using dynamic prompt
+        # Step 4: Generate response using dynamic prompt
         answer = self.llm_manager.generate_text(
             prompt=prompt,
             temperature=temperature,

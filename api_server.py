@@ -74,18 +74,33 @@ def ask_question():
         
         logger.info(f"Processing query: {query}")
         
-        # Call RAG pipeline
-        answer = pipeline.ask(
+        # Get answer from RAG pipeline with context
+        answer, context_items = pipeline.ask(
             query=query,
             n_resources=n_resources,
-            return_context=False
+            return_context=True
         )
+        
+        # Log retrieval results for debugging
+        logger.info(f"Retrieved {len(context_items)} context items")
+        if context_items:
+            logger.info(f"Top result score: {context_items[0].get('score', 'N/A')}")
+            logger.info(f"Top result source: {context_items[0].get('source_file', 'N/A')}")
+        else:
+            logger.warning("⚠️  No context items retrieved!")
         
         # Format response
         response = {
             "answer": answer,
             "query": query,
-            "sources": []  # Can be extended to return source documents
+            "sources": [
+                {
+                    "file": item.get("source_file", "Unknown"),
+                    "page": item.get("page_number", "N/A"),
+                    "score": item.get("score", 0.0)
+                }
+                for item in context_items[:3]  # Return top 3 sources
+            ]
         }
         
         return jsonify(response)

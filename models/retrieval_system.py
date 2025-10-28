@@ -155,17 +155,14 @@ class RetrievalSystem:
         """Keyword-based search - STRICT matching for better accuracy"""
         query_lower = query.lower()
         
-        # Define keyword patterns - STRICT and PRECISE (16 intents)
+        # Define keyword patterns - simplified without intent classification
         keyword_patterns = {
-            # Original 6 intents
             "học phí": ["học phí", "31.600.000", "33.600.000", "35.800.000", "chi phí đào tạo", "tiền học"],
             "điểm": ["điểm số", "gpa", "xếp loại", "điểm tối thiểu", "học lực"],
             "tuyển sinh": ["tuyển sinh", "xét tuyển", "top50", "school rank", "nhập học", "điều kiện"],
             "lịch": ["lịch học", "thời gian học", "học kỳ", "thời khóa biểu", "kỳ học"],
             "tốt nghiệp": ["tốt nghiệp", "điều kiện tốt nghiệp", "bằng cấp", "văn bằng"],
             "ngành": ["ngành học", "chuyên ngành", "chương trình", "khóa học"],
-            
-            # New 10 intents
             "nghiên cứu": ["nghiên cứu", "nckh", "đề tài", "khoa học", "hội nghị", "công bố"],
             "nội quy thi": ["nội quy", "thi cử", "ký thi", "phòng thi", "gian lận", "kiểm tra"],
             "ký túc xá": ["ký túc xá", "ktx", "chỗ ở", "nội trú", "hòa lạc", "phòng ở"],

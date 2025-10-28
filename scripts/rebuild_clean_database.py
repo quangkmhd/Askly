@@ -174,15 +174,11 @@ def main():
     
     # Save
     print("💾 Saving...")
-    embedding_manager.save_embeddings()
-    
-    # Save chunks to JSON
-    chunks_json_path = OUTPUTS_DIR / "text_chunks_clean.json"
-    chunker.save_chunks_to_json(chunks, str(chunks_json_path))
+    embedding_manager.save_embeddings()  # This already saves chunks to _chunks.json
     
     print()
     print("="*80)
-    print("✅ REBUILD COMPLETE!")
+    print(" REBUILD COMPLETE!")
     print("="*80)
     print()
     print(f"📊 Results:")
@@ -191,7 +187,7 @@ def main():
     print(f"   Chunks created: {len(chunks)}")
     print(f"   Embeddings: {len(embeddings)}")
     print()
-    print("🎯 Next steps:")
+    print(" Next steps:")
     print("   1. Test search: python run.py")
     print("   2. Start system: bash start_all.sh")
 

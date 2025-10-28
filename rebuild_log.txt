@@ -1,0 +1,133 @@
+2025-10-28 03:12:02.769264: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-10-28 03:12:03.153466: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:9261] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2025-10-28 03:12:03.153625: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:607] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2025-10-28 03:12:03.212853: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1515] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2025-10-28 03:12:03.343922: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2025-10-28 03:12:04.205793: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/tuanhq/miniconda3/envs/rag311/lib/python3.11/site-packages/tensorflow_hub/__init__.py:61: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import parse_version
+================================================================================
+REBUILD CLEAN DATABASE - FORCE OCR TOÀN BỘ
+================================================================================
+
+⚠️  WARNING: Quá trình này sẽ:
+   1. Force OCR lại TOÀN BỘ PDFs (bỏ text layer cũ)
+   2. Sử dụng Tesseract với config tốt nhất cho tiếng Việt
+   3. Rebuild embeddings hoàn toàn
+   4. Mất khoảng 10-30 phút tùy số lượng trang
+
+Tiếp tục? (yes/no): 
+📁 Found 16 PDFs
+
+
+📄 Processing: Ban hành Quy chế đào tạo trình độ Thạc sĩ.pdf
+   Total pages: 8
+   OCR:   0%|          | 0/8 [00:00<?, ?it/s]   OCR:  12%|█▎        | 1/8 [00:01<00:13,  1.87s/it]   OCR:  25%|██▌       | 2/8 [00:03<00:10,  1.68s/it]   OCR:  38%|███▊      | 3/8 [00:05<00:08,  1.74s/it]   OCR:  50%|█████     | 4/8 [00:06<00:06,  1.72s/it]   OCR:  62%|██████▎   | 5/8 [00:08<00:04,  1.52s/it]   OCR:  75%|███████▌  | 6/8 [00:10<00:03,  1.74s/it]   OCR:  88%|████████▊ | 7/8 [00:11<00:01,  1.71s/it]   OCR: 100%|██████████| 8/8 [00:13<00:00,  1.72s/it]   OCR: 100%|██████████| 8/8 [00:13<00:00,  1.70s/it]
+
+📄 Processing: Dữ liệu về học vụ và thủ tục.pdf
+   Total pages: 7
+   OCR:   0%|          | 0/7 [00:00<?, ?it/s]   OCR:  14%|█▍        | 1/7 [00:00<00:02,  2.50it/s]   OCR: 100%|██████████| 7/7 [00:02<00:00,  3.28it/s]   OCR: 100%|██████████| 7/7 [00:02<00:00,  3.23it/s]
+
+📄 Processing: Mô tả quá trình đào tạo.pdf
+   Total pages: 53
+   OCR:   0%|          | 0/53 [00:00<?, ?it/s]   OCR:   2%|▏         | 1/53 [00:00<00:38,  1.36it/s]   OCR:   4%|▍         | 2/53 [00:01<00:48,  1.06it/s]   OCR:   6%|▌         | 3/53 [00:03<01:12,  1.44s/it]   OCR:   8%|▊         | 4/53 [00:13<03:45,  4.60s/it]   OCR:  15%|█▌        | 8/53 [00:14<01:12,  1.60s/it]   OCR:  17%|█▋        | 9/53 [00:16<01:10,  1.61s/it]   OCR:  19%|█▉        | 10/53 [00:18<01:18,  1.83s/it]   OCR:  21%|██        | 11/53 [00:28<02:34,  3.68s/it]   OCR:  30%|███       | 16/53 [00:30<00:59,  1.61s/it]   OCR:  32%|███▏      | 17/53 [00:32<01:02,  1.73s/it]   OCR:  34%|███▍      | 18/53 [00:35<01:06,  1.89s/it]   OCR:  36%|███▌      | 19/53 [00:36<01:00,  1.78s/it]   OCR:  38%|███▊      | 20/53 [00:38<01:02,  1.88s/it]   OCR:  40%|███▉      | 21/53 [00:40<01:01,  1.92s/it]   OCR:  42%|████▏     | 22/53 [00:43<01:02,  2.02s/it]   OCR:  43%|████▎     | 23/53 [00:45<01:03,  2.12s/it]   OCR:  45%|████▌     | 24/53 [00:47<00:57,  2.00s/it]   OCR:  47%|████▋     | 25/53 [00:48<00:53,  1.89s/it]   OCR:  49%|████▉     | 26/53 [00:50<00:48,  1.78s/it]   OCR:  51%|█████     | 27/53 [00:58<01:33,  3.62s/it]   OCR:  62%|██████▏   | 33/53 [00:59<00:23,  1.16s/it]   OCR:  64%|██████▍   | 34/53 [00:59<00:20,  1.05s/it]   OCR:  66%|██████▌   | 35/53 [01:00<00:18,  1.04s/it]   OCR:  68%|██████▊   | 36/53 [01:02<00:20,  1.20s/it]   OCR:  70%|██████▉   | 37/53 [01:04<00:19,  1.24s/it]   OCR:  72%|███████▏  | 38/53 [01:05<00:17,  1.17s/it]   OCR:  74%|███████▎  | 39/53 [01:06<00:16,  1.16s/it]   OCR:  75%|███████▌  | 40/53 [01:07<00:15,  1.23s/it]   OCR:  77%|███████▋  | 41/53 [01:09<00:16,  1.37s/it]   OCR:  79%|███████▉  | 42/53 [01:10<00:15,  1.43s/it]   OCR:  81%|████████  | 43/53 [01:11<00:11,  1.13s/it]   OCR:  83%|████████▎ | 44/53 [01:12<00:10,  1.13s/it]   OCR:  85%|████████▍ | 45/53 [01:13<00:09,  1.24s/it]   OCR:  87%|████████▋ | 46/53 [01:15<00:09,  1.29s/it]   OCR:  89%|████████▊ | 47/53 [01:23<00:19,  3.30s/it]   OCR: 100%|██████████| 53/53 [01:23<00:00,  1.57s/it]
+
+📄 Processing: QD-1234-DHFPT-Ban-hanh-Noi-quy-ky-thi-Truong-Dai-hoc-FPT.pdf
+   Total pages: 6
+   OCR:   0%|          | 0/6 [00:00<?, ?it/s]   OCR:  17%|█▋        | 1/6 [00:01<00:06,  1.26s/it]   OCR:  33%|███▎      | 2/6 [00:10<00:22,  5.72s/it]   OCR: 100%|██████████| 6/6 [00:07<00:00,  1.24s/it]
+
+📄 Processing: 8.2. QD 1562 - Quy tắc ứng xử trường ĐH FPT (2017).pdf
+   Total pages: 14
+   OCR:   0%|          | 0/14 [00:00<?, ?it/s]   OCR:   7%|▋         | 1/14 [00:01<00:17,  1.32s/it]   OCR:  14%|█▍        | 2/14 [00:02<00:16,  1.37s/it]   OCR:  21%|██▏       | 3/14 [00:04<00:15,  1.41s/it]   OCR:  29%|██▊       | 4/14 [00:05<00:12,  1.21s/it]   OCR:  36%|███▌      | 5/14 [00:06<00:11,  1.28s/it]   OCR:  43%|████▎     | 6/14 [00:08<00:11,  1.39s/it]   OCR:  50%|█████     | 7/14 [00:09<00:09,  1.41s/it]   OCR:  57%|█████▋    | 8/14 [00:10<00:07,  1.19s/it]   OCR:  64%|██████▍   | 9/14 [00:11<00:06,  1.26s/it]   OCR:  71%|███████▏  | 10/14 [00:12<00:05,  1.25s/it]   OCR:  79%|███████▊  | 11/14 [00:14<00:03,  1.22s/it]   OCR:  86%|████████▌ | 12/14 [00:22<00:06,  3.41s/it]   OCR: 100%|██████████| 14/14 [00:16<00:00,  1.21s/it]
+
+📄 Processing: QD 736 DHFPT Sua doi mot so dieu va ban hanh hop nhat Quy che dao tao he Dai hoc chinh quy tai Truong Dai hoc FPT.pdf
+   Total pages: 10
+   OCR:   0%|          | 0/10 [00:00<?, ?it/s]   OCR:  10%|█         | 1/10 [00:01<00:15,  1.73s/it]   OCR:  20%|██        | 2/10 [00:02<00:11,  1.44s/it]   OCR:  30%|███       | 3/10 [00:04<00:09,  1.35s/it]   OCR:  40%|████      | 4/10 [00:05<00:08,  1.47s/it]   OCR:  50%|█████     | 5/10 [00:07<00:08,  1.64s/it]   OCR:  60%|██████    | 6/10 [00:09<00:05,  1.49s/it]   OCR:  70%|███████   | 7/10 [00:10<00:04,  1.61s/it]   OCR:  80%|████████  | 8/10 [00:12<00:03,  1.61s/it]   OCR:  90%|█████████ | 9/10 [00:13<00:01,  1.41s/it]   OCR: 100%|██████████| 10/10 [00:15<00:00,  1.52s/it]   OCR: 100%|██████████| 10/10 [00:15<00:00,  1.52s/it]
+
+📄 Processing: QD 272_new.pdf
+   Total pages: 6
+   OCR:   0%|          | 0/6 [00:00<?, ?it/s]   OCR:  17%|█▋        | 1/6 [00:01<00:07,  1.60s/it]   OCR:  33%|███▎      | 2/6 [00:02<00:05,  1.40s/it]   OCR:  50%|█████     | 3/6 [00:04<00:04,  1.52s/it]   OCR:  67%|██████▋   | 4/6 [00:05<00:02,  1.41s/it]   OCR:  83%|████████▎ | 5/6 [00:07<00:01,  1.54s/it]   OCR: 100%|██████████| 6/6 [00:08<00:00,  1.36s/it]   OCR: 100%|██████████| 6/6 [00:08<00:00,  1.43s/it]
+
+📄 Processing: QĐ 302 ĐHFPT Sửa đổi quy chế khen thưởng cuối học kỳ dành cho sinh viên.pdf
+   Total pages: 4
+   OCR:   0%|          | 0/4 [00:00<?, ?it/s]   OCR:  25%|██▌       | 1/4 [00:01<00:05,  1.71s/it]   OCR:  50%|█████     | 2/4 [00:02<00:02,  1.30s/it]   OCR:  75%|███████▌  | 3/4 [00:03<00:01,  1.26s/it]   OCR: 100%|██████████| 4/4 [00:04<00:00,  1.00it/s]   OCR: 100%|██████████| 4/4 [00:04<00:00,  1.13s/it]
+
+📄 Processing: OJT + kì đồ án.pdf
+   Total pages: 4
+   OCR:   0%|          | 0/4 [00:00<?, ?it/s]   OCR:  25%|██▌       | 1/4 [00:01<00:04,  1.43s/it]   OCR:  50%|█████     | 2/4 [00:02<00:02,  1.44s/it]   OCR:  75%|███████▌  | 3/4 [00:04<00:01,  1.36s/it]   OCR: 100%|██████████| 4/4 [00:04<00:00,  1.05it/s]   OCR: 100%|██████████| 4/4 [00:04<00:00,  1.12s/it]
+
+📄 Processing: Chính sách hỗ trợ cán bộ, giảng viên, sinh viên Tổ chức giáo dục FPT tham dự hội nghị, hội thảo khoa học.pdf
+   Total pages: 10
+   OCR:   0%|          | 0/10 [00:00<?, ?it/s]   OCR:  10%|█         | 1/10 [00:01<00:11,  1.33s/it]   OCR:  20%|██        | 2/10 [00:03<00:13,  1.68s/it]   OCR:  30%|███       | 3/10 [00:04<00:11,  1.69s/it]   OCR:  40%|████      | 4/10 [00:06<00:09,  1.59s/it]   OCR:  50%|█████     | 5/10 [00:07<00:06,  1.35s/it]   OCR:  60%|██████    | 6/10 [00:09<00:06,  1.57s/it]   OCR:  70%|███████   | 7/10 [00:10<00:03,  1.31s/it]   OCR:  80%|████████  | 8/10 [00:11<00:02,  1.21s/it]   OCR:  90%|█████████ | 9/10 [00:12<00:01,  1.39s/it]   OCR: 100%|██████████| 10/10 [00:14<00:00,  1.42s/it]   OCR: 100%|██████████| 10/10 [00:14<00:00,  1.43s/it]
+
+📄 Processing: QD 138 DHFPT Ban hanh Quy dinh khen thuong thanh tich nghien cuu KH cua CBGVSV To chuc Giao duc FPT.pdf
+   Total pages: 8
+   OCR:   0%|          | 0/8 [00:00<?, ?it/s]   OCR:  12%|█▎        | 1/8 [00:02<00:14,  2.00s/it]   OCR:  25%|██▌       | 2/8 [00:03<00:11,  1.89s/it]   OCR:  38%|███▊      | 3/8 [00:05<00:09,  1.96s/it]   OCR:  50%|█████     | 4/8 [00:07<00:07,  1.83s/it]   OCR:  62%|██████▎   | 5/8 [00:09<00:05,  1.84s/it]   OCR:  75%|███████▌  | 6/8 [00:10<00:03,  1.73s/it]   OCR:  88%|████████▊ | 7/8 [00:11<00:01,  1.37s/it]   OCR: 100%|██████████| 8/8 [00:12<00:00,  1.39s/it]   OCR: 100%|██████████| 8/8 [00:12<00:00,  1.62s/it]
+
+📄 Processing: QD 338 DHFPT Ban hanh quy dinh ve Quan ly de tai NCKH cap Truong.pdf
+   Total pages: 42
+   OCR:   0%|          | 0/42 [00:00<?, ?it/s]   OCR:   2%|▏         | 1/42 [00:01<01:13,  1.78s/it]   OCR:   5%|▍         | 2/42 [00:03<01:02,  1.56s/it]   OCR:   7%|▋         | 3/42 [00:04<00:57,  1.48s/it]   OCR:  10%|▉         | 4/42 [00:05<00:54,  1.44s/it]   OCR:  12%|█▏        | 5/42 [00:07<01:00,  1.64s/it]   OCR:  14%|█▍        | 6/42 [00:09<01:02,  1.72s/it]   OCR:  17%|█▋        | 7/42 [00:11<01:03,  1.80s/it]   OCR:  19%|█▉        | 8/42 [00:13<01:00,  1.78s/it]   OCR:  21%|██▏       | 9/42 [00:15<00:58,  1.77s/it]   OCR:  24%|██▍       | 10/42 [00:15<00:45,  1.43s/it]   OCR:  26%|██▌       | 11/42 [00:17<00:42,  1.37s/it]   OCR:  29%|██▊       | 12/42 [00:25<01:45,  3.53s/it]   OCR:  40%|████      | 17/42 [00:30<00:44,  1.80s/it]   OCR:  55%|█████▍    | 23/42 [00:31<00:17,  1.12it/s]   OCR:  57%|█████▋    | 24/42 [00:33<00:17,  1.01it/s]   OCR:  60%|█████▉    | 25/42 [00:35<00:20,  1.20s/it]   OCR:  62%|██████▏   | 26/42 [00:36<00:17,  1.09s/it]   OCR:  64%|██████▍   | 27/42 [00:37<00:16,  1.11s/it]   OCR:  67%|██████▋   | 28/42 [00:38<00:14,  1.06s/it]   OCR:  69%|██████▉   | 29/42 [00:38<00:11,  1.13it/s]   OCR:  71%|███████▏  | 30/42 [00:39<00:09,  1.22it/s]   OCR:  74%|███████▍  | 31/42 [00:40<00:10,  1.09it/s]   OCR:  76%|███████▌  | 32/42 [00:40<00:08,  1.19it/s]   OCR:  79%|███████▊  | 33/42 [00:41<00:07,  1.24it/s]   OCR:  81%|████████  | 34/42 [00:42<00:07,  1.12it/s]   OCR:  83%|████████▎ | 35/42 [00:44<00:07,  1.13s/it]   OCR:  86%|████████▌ | 36/42 [00:45<00:07,  1.19s/it]   OCR:  88%|████████▊ | 37/42 [00:48<00:07,  1.48s/it]   OCR:  90%|█████████ | 38/42 [00:49<00:05,  1.50s/it]   OCR:  93%|█████████▎| 39/42 [00:51<00:04,  1.65s/it]   OCR:  95%|█████████▌| 40/42 [00:53<00:03,  1.72s/it]   OCR:  98%|█████████▊| 41/42 [00:54<00:01,  1.60s/it]   OCR: 100%|██████████| 42/42 [00:55<00:00,  1.49s/it]   OCR: 100%|██████████| 42/42 [00:55<00:00,  1.33s/it]
+
+📄 Processing: 8.1. 1197 QĐ-ĐHFPT Quy định về tiêu chuẩn Năng lực và Đạo đức trong hoạt động nghiên cứu Khoa học Công nghệ và đảm bảo quyền Sở hữu Trí tuệ.pdf
+   Total pages: 8
+   OCR:   0%|          | 0/8 [00:00<?, ?it/s]   OCR:  12%|█▎        | 1/8 [00:01<00:09,  1.40s/it]   OCR:  25%|██▌       | 2/8 [00:02<00:07,  1.27s/it]   OCR:  38%|███▊      | 3/8 [00:04<00:07,  1.48s/it]   OCR:  50%|█████     | 4/8 [00:06<00:06,  1.64s/it]   OCR:  62%|██████▎   | 5/8 [00:07<00:04,  1.38s/it]   OCR:  75%|███████▌  | 6/8 [00:09<00:03,  1.58s/it]   OCR:  88%|████████▊ | 7/8 [00:10<00:01,  1.57s/it]   OCR: 100%|██████████| 8/8 [00:11<00:00,  1.38s/it]   OCR: 100%|██████████| 8/8 [00:11<00:00,  1.45s/it]
+
+📄 Processing: Thông tin liên hệ của nhà trường.pdf
+   Total pages: 1
+   OCR:   0%|          | 0/1 [00:00<?, ?it/s]   OCR: 100%|██████████| 1/1 [00:07<00:00,  7.93s/it]   OCR: 100%|██████████| 1/1 [00:07<00:00,  7.93s/it]
+
+📄 Processing: Dữ liệu về công nghệ và hệ thống của trường.pdf
+   Total pages: 6
+   OCR:   0%|          | 0/6 [00:00<?, ?it/s]   OCR:  83%|████████▎ | 5/6 [00:01<00:00,  3.90it/s]   OCR: 100%|██████████| 6/6 [00:02<00:00,  2.67it/s]   OCR: 100%|██████████| 6/6 [00:02<00:00,  2.90it/s]
+
+📄 Processing: Qd-894-ban-hanh-Noi-quy-Ky-tuc-xa-cs-Hoa-Lac-1.pdf
+   Total pages: 9
+   OCR:   0%|          | 0/9 [00:00<?, ?it/s]   OCR:  11%|█         | 1/9 [00:01<00:08,  1.12s/it]   OCR:  22%|██▏       | 2/9 [00:02<00:10,  1.54s/it]   OCR:  33%|███▎      | 3/9 [00:04<00:09,  1.57s/it]   OCR:  44%|████▍     | 4/9 [00:05<00:07,  1.43s/it]   OCR:  56%|█████▌    | 5/9 [00:07<00:05,  1.36s/it]   OCR:  67%|██████▋   | 6/9 [00:08<00:04,  1.35s/it]   OCR:  78%|███████▊  | 7/9 [00:10<00:02,  1.45s/it]   OCR:  89%|████████▉ | 8/9 [00:10<00:01,  1.30s/it]   OCR: 100%|██████████| 9/9 [00:11<00:00,  1.15s/it]   OCR: 100%|██████████| 9/9 [00:11<00:00,  1.31s/it]
+2025-10-28 03:17:03.279308: I external/local_xla/xla/stream_executor/cuda/cuda_executor.cc:887] could not open file to read NUMA node: /sys/bus/pci/devices/0000:01:00.0/numa_node
+Your kernel may have been built without NUMA support.
+2025-10-28 03:17:03.286719: W tensorflow/core/common_runtime/gpu/gpu_device.cc:2256] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+
+✅ Extracted 195 pages from 16 PDFs
+
+📊 Creating chunks...
+[DEBUG] Processed 195 pages
+[DEBUG] Non-empty pages: 195
+✅ Created 125 chunks
+
+📊 Statistics:
+   total_chunks: 125
+   avg_tokens: 727.0
+   min_tokens: 104
+   max_tokens: 1770
+   avg_chars: 1577.1
+   avg_words: 332.2
+
+🔄 Creating embeddings...
+[INFO] Loading TF-Hub embedding model: https://tfhub.dev/google/universal-sentence-encoder-multilingual/3
+[INFO] Embedding model loaded on device: /CPU:0
+[TF] Embedding:   0%|          | 0/4 [00:00<?, ?it/s][TF] Embedding:  25%|██▌       | 1/4 [00:03<00:10,  3.59s/it][TF] Embedding:  50%|█████     | 2/4 [00:04<00:04,  2.06s/it][TF] Embedding:  75%|███████▌  | 3/4 [00:05<00:01,  1.36s/it][TF] Embedding: 100%|██████████| 4/4 [00:06<00:00,  1.19s/it][TF] Embedding: 100%|██████████| 4/4 [00:06<00:00,  1.51s/it]
+[INFO] Embedding creation completed in 6.57s
+✅ Created 125 embeddings
+
+💾 Saving...
+[INFO] Saving embeddings to /home/tuanhq/project/askly2/askly/outputs/text_chunks_and_embeddings_df.csv
+[INFO] Saved 125 embeddings to /home/tuanhq/project/askly2/askly/outputs/text_chunks_and_embeddings_df.csv
+[INFO] ⚡ Saved embeddings to /home/tuanhq/project/askly2/askly/outputs/text_chunks_and_embeddings_df.npy (numpy binary)
+[INFO] Saved 125 chunks to /home/tuanhq/project/askly2/askly/outputs/text_chunks_and_embeddings_df_chunks.json
+[INFO] Saved 125 chunks to /home/tuanhq/project/askly2/askly/outputs/text_chunks_clean.json
+
+================================================================================
+✅ REBUILD COMPLETE!
+================================================================================
+
+📊 Results:
+   PDFs processed: 16
+   Pages extracted: 195
+   Chunks created: 125
+   Embeddings: 125
+
+🎯 Next steps:
+   1. Test search: python run.py
+   2. Start system: bash start_all.sh

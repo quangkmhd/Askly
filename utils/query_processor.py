@@ -1,130 +1,15 @@
 """
-Query processing utilities: standalone question generation, intent classification
+Query processing utilities: standalone question generation
 """
 from typing import List, Dict, Optional
 import re
 
 
 class QueryProcessor:
-    """Process user queries: generate standalone questions, classify intent"""
+    """Process user queries: generate standalone questions"""
     
     def __init__(self):
-        # Intent patterns (rule-based) - Updated with 16 intents total
-        self.intent_patterns = {
-            # === ORIGINAL 6 INTENTS ===
-            'tuition_fee': [
-                'học phí', 'chi phí', 'tiền học', 'lệ phí',
-                'bao nhiêu tiền', 'giá', 'cost', 'tuition'
-            ],
-            'admission': [
-                'tuyển sinh', 'nhập học', 'đăng ký học', 'xét tuyển',
-                'điều kiện nhập', 'yêu cầu tuyển', 'admission', 'enroll'
-            ],
-            'grades': [
-                'điểm', 'gpa', 'điểm số', 'xếp loại', 'học lực',
-                'đánh giá', 'grade', 'score', 'transcript'
-            ],
-            'schedule': [
-                'lịch', 'thời gian học', 'học kỳ', 'kỳ học', 'lịch trình',
-                'thời khóa biểu', 'schedule', 'timetable', 'calendar'
-            ],
-            'graduation': [
-                'tốt nghiệp', 'điều kiện tốt nghiệp', 'bằng cấp',
-                'văn bằng', 'graduation', 'degree', 'graduate'
-            ],
-            'program': [
-                'ngành', 'chuyên ngành', 'chương trình đào tạo', 'khóa học',
-                'program', 'major', 'curriculum', 'course'
-            ],
-            
-            # === NEW 10 INTENTS (Phase 1: HIGH PRIORITY) ===
-            'research': [
-                'nghiên cứu', 'nckh', 'đề tài', 'khoa học',
-                'hội nghị', 'hội thảo', 'công bố', 'tạp chí',
-                'sở hữu trí tuệ', 'bằng sáng chế', 'giải thưởng khoa học',
-                'quản lý đề tài', 'thành tích nghiên cứu',
-                'research', 'publication', 'conference', 'paper',
-                'intellectual property', 'patent'
-            ],
-            'exam_rules': [
-                'nội quy thi', 'ký thi', 'quy định thi', 'phòng thi',
-                'gian lận', 'vi phạm thi', 'giám thị', 'bài thi', 'đề thi',
-                'exam rules', 'examination', 'test rules', 'cheating'
-            ],
-            'dormitory': [
-                'ký túc xá', 'ktx', 'chỗ ở', 'nội trú', 'phòng ở',
-                'đăng ký ktx', 'hòa lạc', 'nội quy ktx', 'tiện nghi ktx',
-                'dormitory', 'dorm', 'accommodation', 'housing', 'residence'
-            ],
-            'internship': [
-                'ojt', 'thực tập', 'đồ án', 'capstone', 'on-the-job',
-                'dự án tốt nghiệp', 'mentor', 'công ty thực tập',
-                'báo cáo thực tập', 'internship', 'capstone project',
-                'final project', 'industrial training'
-            ],
-            'procedures': [
-                'thủ tục', 'hồ sơ', 'giấy tờ', 'hành chính', 'văn phòng',
-                'đăng ký', 'xin', 'nộp', 'làm', 'cấp',
-                'giấy xác nhận', 'bảng điểm', 'giấy chứng nhận',
-                'procedure', 'document', 'paperwork', 'application', 'form'
-            ],
-            
-            # === NEW INTENTS (Phase 2: MEDIUM PRIORITY) ===
-            'conduct_rules': [
-                'quy tắc ứng xử', 'đạo đức', 'hành vi', 'chuẩn mực',
-                'vi phạm', 'kỷ luật', 'xử lý kỷ luật', 'văn hóa',
-                'conduct', 'behavior', 'ethics', 'violation', 'discipline'
-            ],
-            'awards': [
-                'khen thưởng', 'học bổng', 'giải thưởng', 'phần thưởng',
-                'sinh viên xuất sắc', 'sinh viên giỏi', 'thành tích',
-                'danh hiệu', 'chứng chỉ khen thưởng',
-                'award', 'scholarship', 'prize', 'honor', 'recognition'
-            ],
-            'graduate_program': [
-                'thạc sĩ', 'sau đại học', 'cao học', 'luận văn',
-                'chương trình thạc sĩ', 'đào tạo thạc sĩ',
-                'master', 'graduate', 'postgraduate', 'mba', 'thesis'
-            ],
-            
-            # === NEW INTENTS (Phase 3: LOW PRIORITY) ===
-            'contact': [
-                'liên hệ', 'email', 'số điện thoại', 'địa chỉ', 'hotline',
-                'phòng ban', 'văn phòng', 'tư vấn', 'hỏi đáp', 'hỗ trợ',
-                'contact', 'phone', 'address', 'support', 'help desk'
-            ],
-            'technology': [
-                'công nghệ', 'hệ thống', 'cơ sở vật chất', 'phòng lab',
-                'máy tính', 'wifi', 'mạng', 'phần mềm', 'tài khoản',
-                'technology', 'system', 'infrastructure', 'lab', 'software'
-            ],
-            
-            'general': []  # Default fallback
-        }
-    
-    def classify_intent(self, query: str) -> str:
-        """
-        Classify user intent using rule-based matching
-        
-        Returns:
-            Intent label: 'tuition_fee', 'admission', 'grades', etc.
-        """
-        query_lower = query.lower()
-        
-        # Count matches for each intent
-        intent_scores = {}
-        for intent, keywords in self.intent_patterns.items():
-            if intent == 'general':
-                continue
-            score = sum(1 for kw in keywords if kw in query_lower)
-            if score > 0:
-                intent_scores[intent] = score
-        
-        # Return intent with highest score
-        if intent_scores:
-            return max(intent_scores.items(), key=lambda x: x[1])[0]
-        
-        return 'general'
+        pass
     
     def generate_standalone_question(
         self,
@@ -211,7 +96,7 @@ class QueryProcessor:
         """Extract main topic from text"""
         text_lower = text.lower()
         
-        # Topic keywords - Extended with new intents
+        # Topic keywords - simplified without intent classification
         topics = {
             'học phí': ['học phí', 'chi phí', 'tiền học'],
             'tuyển sinh': ['tuyển sinh', 'nhập học', 'đăng ký'],
@@ -278,22 +163,8 @@ if __name__ == "__main__":
     # Test
     processor = QueryProcessor()
     
-    # Test intent classification
-    print("=== Intent Classification ===")
-    queries = [
-        "học phí của trường là bao nhiêu?",
-        "điều kiện tuyển sinh như thế nào?",
-        "điểm gpa tối thiểu là bao nhiêu?",
-        "lịch học kỳ 1 ra sao?",
-    ]
-    
-    for q in queries:
-        intent = processor.classify_intent(q)
-        print(f"Query: {q}")
-        print(f"Intent: {intent}\n")
-    
     # Test standalone question generation
-    print("\n=== Standalone Question Generation ===")
+    print("=== Standalone Question Generation ===")
     
     history = [
         {'role': 'user', 'content': 'Học phí của trường là bao nhiêu?'},
