@@ -1,9 +1,8 @@
 # Askly - Enterprise RAG Pipeline
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg?style=flat-square)
-![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg?style=flat-square)
-![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-yellow.svg)
-![HuggingFace](https://img.shields.io/badge/powered_by-Hugging_Face-orange.svg)
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=white)
+![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-yellow.svg?style=flat-square)
 
 Extract, embed, and query complex documents instantly with our robust Retrieval-Augmented Generation (RAG) engine. Built for data scientists, researchers, and knowledge workers who need accurate answers from massive PDF troves, it effortlessly processes over 100 pages per minute with high-fidelity semantic search.
 
